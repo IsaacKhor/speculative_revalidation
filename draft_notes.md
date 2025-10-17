@@ -1,0 +1,6 @@
+- backdoor motivation section into a cdn trace analysis
+- comparison against wikimedia
+    - note specific differences, both are specialised
+    - comparison over time with historical traces
+    - workload evolution - more singletons, more big assets
+- focus on both aspects, both the analysis and the prefetch analysis
