@@ -1,0 +1,23 @@
+fb23:
+
+timestamp,cacheKey,OpType,objectSize,responseSize,responseHeaderSize,rangeStart,rangeEnd,TTL,SamplingRate,cache_hit,item_value,RequestHandler,cdn_content_type_id,vip_type
+1678863469090,013302969030000000000000000000000000000000000000000000000000000000,1,199671642,39088604,1805,160628736,199671641,1209600,0.00010000,0,0,1000,24,2000
+1678863526695,013302969040000000000000000000000000000000000000000000000000000000000000000000000000000000000000,1,1694183606,456753428,276,-1,-1,1209600,0.00010000,0,1,1001,2,2001
+
+cf:
+
+timestamp,key,zone,size,expiry_time,stale_time,method,mime
+1745712000,28e3c4805dc376c3,a9deca06e76f5a50,161189,300,0,0,text/html; charset=utf-8
+1745712000,5bb1c025b485e25e,e579e303a6479bc2,242,14400,0,0,application/json
+
+wikimedia t:
+
+relative_unix   hashed_host_path_query  response_size   time_firstbyte
+86400   -719785930      12319   0.511017
+86400   566297063       34510   1.97E-4
+
+wikimedia u:
+
+relative_unix   hashed_path_query       image_type      response_size   time_firstbyte
+86400   -1504246911     png     705     1.63E-4
+86400   -831376498      svg+xml 177     6.65E-4

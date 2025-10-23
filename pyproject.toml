@@ -8,5 +8,8 @@ dependencies = [
     "boto3>=1.40.36",
     "duckdb>=1.4.1",
     "jupyter>=1.1.1",
+    "matplotlib>=3.10.7",
+    "numpy>=2.3.4",
+    "pandas>=2.3.3",
     "zstandard>=0.22.0",
 ]
