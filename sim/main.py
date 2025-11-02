@@ -1,14 +1,19 @@
+#!/usr/bin/env python3
+
 from __future__ import annotations
 
 import argparse
 import csv
 import enum
+import hashlib
 import heapq
 import io
 import logging
+import sys
 from collections import OrderedDict
 from dataclasses import dataclass, field
 from pathlib import Path
+from time import perf_counter
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple, cast
 
 import zstandard
@@ -456,16 +461,68 @@ def discover_trace_paths(inputs: Sequence[str], default_dir: Path) -> List[Path]
     return paths
 
 
-def iter_requests(paths: Iterable[Path], limit: Optional[int] = None) -> Iterator[Request]:
+def _key_in_sample(key: str, ratio: int) -> bool:
+    if ratio <= 1:
+        return True
+    # Use a stable hash so sampling decisions remain deterministic across runs.
+    digest = hashlib.sha1(key.encode("utf-8")).digest()
+    value = int.from_bytes(digest[:8], "big", signed=False)
+    return (value % ratio) == 0
+
+
+class ProgressReporter:
+    def __init__(self, enabled: bool, interval: int = 10_000) -> None:
+        self.enabled = enabled
+        self.interval = max(1, interval)
+        self._last_report = 0
+        self._start = perf_counter()
+
+    def tick(self, count: int) -> None:
+        if not self.enabled:
+            return
+        if count - self._last_report < self.interval:
+            return
+        self._emit(count)
+
+    def done(self, count: int) -> None:
+        if not self.enabled:
+            return
+        self._emit(count, final=True)
+
+    def _emit(self, count: int, final: bool = False) -> None:
+        now = perf_counter()
+        elapsed = max(now - self._start, 1e-9)
+        rate = count / elapsed
+        label = "total" if final else "processed"
+        print(f"[progress] {label} {count:,} requests ({rate:,.0f}/s)", file=sys.stderr)
+        self._last_report = count
+
+
+def iter_requests(
+        paths: Iterable[Path],
+        limit: Optional[int] = None,
+        key_sample_ratio: int = 1,
+        progress: Optional[ProgressReporter] = None,
+) -> Iterator[Request]:
     count = 0
+    completed = False
     for trace_path in paths:
         LOGGER.info("Reading trace %s", trace_path)
         for request in read_trace(trace_path):
+            if not _key_in_sample(request.key, key_sample_ratio):
+                continue
             yield request
             count += 1
+            if progress:
+                progress.tick(count)
             if limit is not None and count >= limit:
                 LOGGER.info("Reached max request limit of %s", limit)
+                if progress:
+                    progress.done(count)
+                completed = True
                 return
+    if progress and not completed:
+        progress.done(count)
 
 
 def read_trace(path: Path) -> Iterator[Request]:
@@ -482,13 +539,16 @@ def read_trace(path: Path) -> Iterator[Request]:
 
 def _read_csv_stream(stream: io.TextIOBase, path: Path) -> Iterator[Request]:
     reader = csv.DictReader(stream)
-    for row in reader:
-        if not row:
-            continue
-        try:
-            yield Request.from_row(row)
-        except ValueError as exc:
-            LOGGER.warning("Skipping malformed row in %s: %s", path, exc)
+    try:
+        for row in reader:
+            if not row:
+                continue
+            try:
+                yield Request.from_row(row)
+            except ValueError as exc:
+                LOGGER.warning("Skipping malformed row in %s: %s", path, exc)
+    except Exception as exc:
+        LOGGER.error("Error reading CSV from %s: %s", path, exc)
 
 
 def run_simulation(
@@ -497,6 +557,8 @@ def run_simulation(
         cache_sizes: Sequence[int],
         auto_expire: bool,
         limit: Optional[int] = None,
+        key_sample_ratio: int = 1,
+        progress: Optional[ProgressReporter] = None,
 ) -> List[Dict[str, Any]]:
     simulators: List[Tuple[str, int, CacheSimulator]] = []
     for policy_name in policies:
@@ -505,7 +567,7 @@ def run_simulation(
                 policy_name), auto_expire=auto_expire)
             simulators.append((policy_name, capacity, simulator))
 
-    for request in iter_requests(trace_paths, limit=limit):
+    for request in iter_requests(trace_paths, limit=limit, key_sample_ratio=key_sample_ratio, progress=progress):
         for _, _, simulator in simulators:
             simulator.process_request(request)
 
@@ -548,6 +610,10 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
                         default=0, help="Increase logging verbosity")
     parser.add_argument("--list-policies", action="store_true",
                         help="List supported cache policies and exit")
+    parser.add_argument("--key-sample", type=int, default=1,
+                        help="Sample every Nth key using a deterministic hash (e.g. 3 keeps roughly one third of keys). Also adjusts cache size automatically.")
+    parser.add_argument("--progress", action="store_true",
+                        help="Display a simple progress indicator while processing requests")
     return parser.parse_args(argv)
 
 
@@ -566,9 +632,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     default_traces = repo_root / "traces"
 
     try:
-        cache_sizes = [parse_size(size) for size in args.cache_sizes]
+        cache_sizes = [parse_size(size) / args.key_sample for size in args.cache_sizes]
     except ValueError as exc:
         LOGGER.error("Failed to parse cache sizes: %s", exc)
+        return 2
+
+    if args.key_sample < 1:
+        LOGGER.error("Key sample ratio must be a positive integer")
         return 2
 
     try:
@@ -584,6 +654,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             cache_sizes=cache_sizes,
             auto_expire=args.auto_expire,
             limit=args.max_requests,
+            key_sample_ratio=args.key_sample,
+            progress=ProgressReporter(enabled=args.progress),
         )
     except KeyboardInterrupt:  # pragma: no cover - handled for CLI use
         LOGGER.warning("Simulation interrupted")

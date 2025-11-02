@@ -9,6 +9,7 @@ cf:
 timestamp,key,zone,size,expiry_time,stale_time,method,mime
 1745712000,28e3c4805dc376c3,a9deca06e76f5a50,161189,300,0,0,text/html; charset=utf-8
 1745712000,5bb1c025b485e25e,e579e303a6479bc2,242,14400,0,0,application/json
+1745712001,5bb1c025b485e25f,e579e303a6479bc3,242,14400,0,0,application/json,application/png
 
 wikimedia t:
 
