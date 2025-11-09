@@ -5,3 +5,6 @@ fetch.py
 !traces/preprocess*
 .xmake/
 build/
+.clang-format
+compile_commands.json
+.cache/

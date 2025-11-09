@@ -17,6 +17,18 @@ relative_unix   hashed_host_path_query  response_size   time_firstbyte
 86400   -719785930      12319   0.511017
 86400   566297063       34510   1.97E-4
 
+❯ zstdcat traces/wm/t-all.csv.zst | head
+timestamp,key,size
+86400,-719785930,12319
+86400,566297063,34510
+86400,1252933015,47354
+86400,707785349,11813
+86400,1284302613,31883
+86400,1184865752,19944
+86400,36406143,24810
+86400,301688409,25326
+86400,209252430,90247
+
 wikimedia u:
 
 relative_unix   hashed_path_query       image_type      response_size   time_firstbyte
