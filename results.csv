@@ -1,6 +1,0 @@
-infile,capacity_mb,key_sample_ratio,evict_expired,rv_enable,rv_min_ttl,rv_min_freq,rv_max_zone_amp,all,hit_fresh,hit_reval,hit_stale,miss_mandatory,miss_expired,miss_evicted
-traces/sim/wm_a.bin.zst,2048,1,true,true,15,3,2,197819321,62810565,2652095,0,17895056,0,114461605
-traces/sim/wm_a.bin.zst,2048,2,true,true,15,3,2,99250647,31841258,1332472,0,8945343,0,57131574
-traces/sim/wm_a.bin.zst,2048,8,true,true,15,3,2,24444951,7591677,333878,0,2237271,0,14282125
-traces/sim/wm_a.bin.zst,2048,16,true,true,15,3,2,12149493,3725208,162606,0,1119088,0,7142591
-traces/sim/wm_a.bin.zst,2048,4,true,true,15,3,2,49196009,15479894,666567,0,4472134,0,28577414

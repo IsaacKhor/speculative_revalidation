@@ -18,8 +18,7 @@
 #include <zstd.h>
 
 const bool ENABLE_FORCE_TTL = false;
-const u64 FORCE_TTL = 3600;
-const bool DEBUG_PRINT_FIRST_ENTRIES = true;
+const u64 FORCE_TTL = 86400 * 2;
 namespace po = boost::program_options;
 
 class TraceReader
@@ -83,7 +82,7 @@ class ExpiryHeap
 class LRUCache
 {
   public:
-    LRUCache(u64 capacity_bytes) : capacity(capacity_bytes), current_size(0) {}
+    LRUCache(u64 capacity_bytes) : capacity(capacity_bytes) {}
 
     // Find an entry in the cache
     auto find(u64 key) -> absl::node_hash_map<u64, CacheEntry>::iterator
@@ -128,40 +127,39 @@ class LRUCache
     }
 
     // Remove an entry from the cache (by key)
-    void erase(u64 key)
+    void evict_key(u64 key)
     {
         auto it = cache.find(key);
         if (it != cache.end())
             erase(it);
     }
 
-    // Get the least recently used key (for eviction)
-    auto get_lru_key() const -> u64 { return lru_list.front(); }
-
-    // Evict the LRU entry and return the evicted key
-    auto evict_lru() -> u64
+    // Evict the LRU entry and return the evicted entry
+    auto evict_lru() -> CacheEntry
     {
         auto lru_key = lru_list.front();
         lru_list.pop_front();
 
         auto it = cache.find(lru_key);
+        auto entry = it->second;
         if (it != cache.end()) {
             current_size -= it->second.size;
             cache.erase(it);
         }
 
-        return lru_key;
+        return entry;
     }
 
     // Check if cache is over capacity
     bool is_over_capacity() const { return current_size > capacity; }
     auto get_current_size() const -> u64 { return current_size; }
+    auto get_lru_key() const -> u64 { return lru_list.front(); }
 
   private:
     absl::node_hash_map<u64, CacheEntry> cache;
     std::list<u64> lru_list;
-    u64 capacity;
-    u64 current_size;
+    u64 capacity = 0;
+    u64 current_size = 0;
 };
 
 auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
@@ -169,11 +167,11 @@ auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
     Req req;
     SimStats stats;
 
-    absl::node_hash_set<u64> seen_keys;
-
     // cache should be adjusted for key sampling
-    LRUCache lru_cache(cfg.capacity_mb * 1024 * 1024 / cfg.key_sample_ratio);
+    LRUCache lru_cache(cfg.capacity_gib * 1024 * 1024 * 1024 /
+                       cfg.key_sample_ratio);
     ExpiryHeap expiry_heap;
+    absl::node_hash_set<u64> seen_keys;
 
     while (reader.get(req)) {
         // skip too large objects
@@ -195,6 +193,7 @@ auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
             req.ttl = FORCE_TTL;
 
         // handle expired entries
+        // TODO handle ttstale
         if (cfg.rv_enable) {
             // get all expired entries up to current ts
             while (!expiry_heap.empty() && expiry_heap.top().expiry_ts <= ts) {
@@ -220,15 +219,20 @@ auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
                     entry.accesses_since_update = 0;
                     expiry_heap.push(
                         ExpiryHeapEntry{ts + entry.ttl, entry.key});
+                    stats.revals++;
                     continue;
                 }
+
+                // check if it was a wasted revalidation
+                if (entry.accesses_since_update == 0)
+                    stats.reval_wasted++;
 
                 if (!cfg.evict_expired)
                     continue;
 
                 // evict if not revalidated
                 seen_keys.insert(key);
-                lru_cache.erase(key);
+                lru_cache.evict_key(key);
             }
         }
 
@@ -255,12 +259,15 @@ auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
                 .accesses_since_update = 1,
             };
             lru_cache.insert(req.key, new_entry);
+            stats.fetches++;
             expiry_heap.push(ExpiryHeapEntry{ts + req.ttl, req.key});
 
             // evict until under capacity
             while (lru_cache.is_over_capacity()) {
-                auto evicted_key = lru_cache.evict_lru();
-                seen_keys.insert(evicted_key);
+                auto evicted_entry = lru_cache.evict_lru();
+                seen_keys.insert(evicted_entry.key);
+                if (evicted_entry.accesses_since_update == 0)
+                    stats.reval_wasted++;
             }
 
             continue;
@@ -305,7 +312,7 @@ auto main(int argc, char **argv) -> int
     po::options_description desc("Allowed options");
     desc.add_options()("help,h", "produce help message")
     ("csvout,o", po::value<str>()->default_value("results.csv"), "all revalidation results output file")
-    ("capacity,c", po::value<u64>()->default_value(2048), "cache capacity in MB")
+    ("capacity,c", po::value<u64>()->default_value(2048), "cache capacity in GiB")
     ("parallel,p", po::value<u32>()->default_value(1), "number of parallel simulations to run")
 
     ("input-file,i", po::value<vec<str>>(), "input trace file (zstd compressed)")
@@ -354,7 +361,7 @@ auto main(int argc, char **argv) -> int
                     for (auto rvza : rv_max_za)
                         configs.push_back(SimConfig{
                             .infile = infile,
-                            .capacity_mb = capacity,
+                            .capacity_gib = capacity,
                             .key_sample_ratio = ksr,
                             .evict_expired = true,
                             .rv_enable = rv_enable,
@@ -366,6 +373,9 @@ auto main(int argc, char **argv) -> int
     fmt::print("CSV output file: {}\n", csvout_file);
     auto outf = fmt::output_file(csvout_file);
     outf.print("{},{}\n", SimConfig::csv_hdr(), SimStats::csv_hdr());
+
+    fmt::print("Running {} simulations with parallelism {}\n", configs.size(),
+               parallel);
 
     std::counting_semaphore sem{parallel};
     vec<std::jthread> threads;
