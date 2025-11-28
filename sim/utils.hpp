@@ -13,28 +13,14 @@
 #include <fmt/core.h>
 #include <vector>
 
+#include "model.h"
+
 namespace bp = boost::process;
 using f64 = double;
 using u64 = uint64_t;
 using u32 = uint32_t;
 using str = std::string;
 template <typename T> using vec = std::vector<T>;
-
-struct Req {
-    u64 ts;
-    u64 key;
-    u64 zone;
-    u64 size;
-    u64 ttl;
-    u64 ttstale;
-    bool is_purge;
-
-    inline auto str() const -> str
-    {
-        return fmt::format("Req(ts={}, key={:16x}, size={}, ttl={})", ts, key,
-                           size, ttl);
-    }
-};
 
 inline auto tnow() { return std::chrono::steady_clock::now(); }
 inline auto tsince(std::chrono::time_point<std::chrono::steady_clock> &start)

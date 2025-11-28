@@ -8,10 +8,12 @@ from typing import List
 import time
 
 # matches simc/preprocess.hpp CdnRequest layout
-_PACKER = struct.Struct('<QQQQQQ?7x')
+_PACKER = struct.Struct('@QQQIIII?7x')
 _MASK64 = 0x7fffffffffffffff
 # Wikimedia traces do not ship TTL metadata, so default to 24h TTL.
 _WM_DEFAULT_TTL = 24 * 60 * 60
+
+MAX_UINT32 = 0xffffffff
 
 
 def _parse_args() -> argparse.Namespace:
@@ -78,6 +80,8 @@ def main() -> None:
     tstart = time.time()
     header_skipped = False
     processed_rows = 0
+    start_ts = 0
+    ts_clamp_count = 0
     for raw in sys.stdin:
         line = raw.rstrip('\r\n')
         if not header_skipped:
@@ -100,6 +104,19 @@ def main() -> None:
             continue
 
         ts, key, zone, size, ttl, ttstale, is_purge = parsed
+        if processed_rows == 1:
+            start_ts = ts
+
+        ts -= start_ts
+        if ts > MAX_UINT32:
+            ts_clamp_count += 1
+            ts = MAX_UINT32
+
+        if ttl > MAX_UINT32:
+            ttl = MAX_UINT32
+
+        if ttstale > MAX_UINT32:
+            ttstale = MAX_UINT32
 
         if processed_rows < 5:
             print(f'Row {processed_rows}: ts={ts}, key={key:x}, '
@@ -112,7 +129,7 @@ def main() -> None:
             print(f'={processed_rows/1_000_000}m rows', file=sys.stderr)
 
         try:
-            packed = _PACKER.pack(ts, key, zone, size, ttl, ttstale, is_purge)
+            packed = _PACKER.pack(key, zone, size, ts, 0, ttl, ttstale, is_purge)
         except struct.error as e:
             print(
                 f'\nError packing row {processed_rows} ({raw}): {e}', file=sys.stderr)
@@ -124,6 +141,7 @@ def main() -> None:
     elapsed = time.time() - tstart
     print(f'Time elapsed: {elapsed:.2f} seconds', file=sys.stderr)
     print(f'Rows per second: {processed_rows/elapsed:.2f}', file=sys.stderr)
+    print(f'TS clamp count: {ts_clamp_count}', file=sys.stderr)
 
 
 if __name__ == '__main__':

@@ -12,7 +12,6 @@
 #include <fmt/ranges.h>
 #include <iostream>
 #include <list>
-#include <semaphore>
 #include <thread>
 #include <vector>
 #include <zstd.h>
@@ -47,6 +46,11 @@ struct CacheEntry {
     u32 accesses_since_update;
     std::list<u64>::iterator lru_pos;
 };
+
+// using cachemap = absl::node_hash_map<u64, CacheEntry>;
+// using keyset = absl::node_hash_set<u64>;
+using cachemap = std::unordered_map<u64, CacheEntry>;
+using keyset = std::unordered_set<u64>;
 
 struct ExpiryHeapEntry {
     u64 expiry_ts;
@@ -85,12 +89,12 @@ class LRUCache
     LRUCache(u64 capacity_bytes) : capacity(capacity_bytes) {}
 
     // Find an entry in the cache
-    auto find(u64 key) -> absl::node_hash_map<u64, CacheEntry>::iterator
+    auto find(u64 key) -> cachemap::iterator
     {
         return cache.find(key);
     }
 
-    auto end() -> absl::node_hash_map<u64, CacheEntry>::iterator
+    auto end() -> cachemap::iterator
     {
         return cache.end();
     }
@@ -119,7 +123,7 @@ class LRUCache
     }
 
     // Remove an entry from the cache (by iterator)
-    void erase(absl::node_hash_map<u64, CacheEntry>::iterator it)
+    void erase(cachemap::iterator it)
     {
         lru_list.erase(it->second.lru_pos);
         current_size -= it->second.size;
@@ -156,7 +160,7 @@ class LRUCache
     auto get_lru_key() const -> u64 { return lru_list.front(); }
 
   private:
-    absl::node_hash_map<u64, CacheEntry> cache;
+    cachemap cache;
     std::list<u64> lru_list;
     u64 capacity = 0;
     u64 current_size = 0;
@@ -171,7 +175,7 @@ auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
     LRUCache lru_cache(cfg.capacity_gib * 1024 * 1024 * 1024 /
                        cfg.key_sample_ratio);
     ExpiryHeap expiry_heap;
-    absl::node_hash_set<u64> seen_keys;
+    keyset seen_keys;
 
     while (reader.get(req)) {
         // skip too large objects
@@ -377,34 +381,35 @@ auto main(int argc, char **argv) -> int
     fmt::print("Running {} simulations with parallelism {}\n", configs.size(),
                parallel);
 
-    std::counting_semaphore sem{parallel};
     vec<std::jthread> threads;
+    std::atomic<u32> cfg_idx{0};
 
-    for (auto i = 0; i < configs.size(); i++) {
-        auto &cfg = configs[i];
-        threads.push_back(std::jthread([&sem, &cfg, &outf, i]() {
-            sem.acquire();
+    for (auto i = 0; i < parallel; i++)
+        threads.push_back(std::jthread([&cfg_idx, &configs, &outf]() {
+            int j;
+            while ((j = cfg_idx.fetch_add(1)) < configs.size()) {
+                auto &cfg = configs[j];
+                fmt::print("Running config #{}: {}\n", j + 1, cfg.repr());
+                bp::ipstream zout;
+                bp::child zstdcat("zstdcat",
+                                  bp::std_in<cfg.infile, bp::std_out> zout);
+                TraceReader reader(zout);
 
-            fmt::print("Running config #{}: {}\n", i + 1, cfg.repr());
-            bp::ipstream zout;
-            bp::child zstdcat("zstdcat",
-                              bp::std_in<cfg.infile, bp::std_out> zout);
-            TraceReader reader(zout);
+                auto tstart = tnow();
+                auto stats = run_sim(cfg, reader);
+                auto total_time = tsince(tstart);
 
-            auto tstart = tnow();
-            auto stats = run_sim(cfg, reader);
-            auto total_time = tsince(tstart);
+                auto mrps =
+                    (double)stats.all / (double)total_time / 1'000'000.0;
+                fmt::print("Results #{} (took {}s, {:.2f} Mreq/s)\n{}:\n{}",
+                           j + 1, total_time, mrps, cfg.repr(),
+                           stats.human_str());
+                outf.print("{},{}\n", cfg.csv(), stats.csv());
 
-            auto mrps = (double)stats.all / (double)total_time / 1'000'000.0;
-            fmt::print("Results #{} (took {}s, {:.2f} Mreq/s)\n{}:\n{}", i + 1,
-                       total_time, mrps, cfg.repr(), stats.human_str());
-            outf.print("{},{}\n", cfg.csv(), stats.csv());
-
-            zstdcat.terminate();
-            zstdcat.wait();
-            sem.release();
+                zstdcat.terminate();
+                zstdcat.wait();
+            }
         }));
-    }
 
     for (auto &t : threads)
         t.join();
