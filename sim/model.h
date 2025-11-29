@@ -15,6 +15,7 @@ struct Req {
     u32 next_req_ts;
     u32 ttl;
     u32 ttstale;
+    u32 content_type;
     bool is_purge;
 
     inline auto str() const -> str

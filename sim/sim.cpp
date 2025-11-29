@@ -40,10 +40,11 @@ struct CacheEntry {
     u64 size;
     u32 ttl;
     u32 ttstale;
-    u64 entry_create_ts;
-    u64 last_access_ts;
-    u64 last_update_ts;
+    u32 entry_create_ts;
+    u32 last_access_ts;
+    u32 last_update_ts;
     u32 accesses_since_update;
+    u32 next_access_ts;
     std::list<u64>::iterator lru_pos;
 };
 
@@ -89,15 +90,9 @@ class LRUCache
     LRUCache(u64 capacity_bytes) : capacity(capacity_bytes) {}
 
     // Find an entry in the cache
-    auto find(u64 key) -> cachemap::iterator
-    {
-        return cache.find(key);
-    }
+    auto find(u64 key) -> cachemap::iterator { return cache.find(key); }
 
-    auto end() -> cachemap::iterator
-    {
-        return cache.end();
-    }
+    auto end() -> cachemap::iterator { return cache.end(); }
 
     // Get entry by key (assumes key exists)
     auto get(u64 key) -> CacheEntry & { return cache.at(key); }
@@ -166,30 +161,111 @@ class LRUCache
     u64 current_size = 0;
 };
 
-auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
+class CacheSimulator
 {
-    Req req;
-    SimStats stats;
-
-    // cache should be adjusted for key sampling
-    LRUCache lru_cache(cfg.capacity_gib * 1024 * 1024 * 1024 /
-                       cfg.key_sample_ratio);
+  private:
+    SimConfig cfg;
+    LRUCache lru_cache;
     ExpiryHeap expiry_heap;
     keyset seen_keys;
+    SimStats stats;
 
-    while (reader.get(req)) {
-        // skip too large objects
-        if (req.size > 5ull * 1024 * 1024 * 1024) // 5 gib
-            continue;
+  public:
+    CacheSimulator(SimConfig cfg)
+        : cfg(cfg), lru_cache(cfg.capacity_gib * 1024 * 1024 * 1024 /
+                              cfg.key_sample_ratio)
+    {
+    }
 
-        // cap ttls
-        if (req.ttl > UINT32_MAX)
-            req.ttl = UINT32_MAX;
-        if (req.ttstale > UINT32_MAX)
-            req.ttstale = UINT32_MAX;
+    auto evict(u64 key)
+    {
+        seen_keys.insert(key);
+        lru_cache.evict_key(key);
+    }
 
-        if (req.key % cfg.key_sample_ratio != 0) // should be uniformly dist
-            continue;
+    auto reval(CacheEntry &entry, u64 now_ts)
+    {
+        entry.last_update_ts = now_ts;
+        entry.accesses_since_update = 0;
+        expiry_heap.push(ExpiryHeapEntry{now_ts + entry.ttl, entry.key});
+        stats.revals++;
+    }
+
+    auto run_sim(TraceReader &reader, bool print_progress) -> SimStats
+    {
+        Req req;
+
+        while (reader.get(req)) {
+            // skip too large objects
+            if (req.size > 5ull * 1024 * 1024 * 1024) // 5 gib
+                continue;
+
+            if (req.key % cfg.key_sample_ratio != 0) // should be uniformly dist
+                continue;
+
+            sim_request(req);
+
+            if (print_progress && stats.all % 1'000'000 == 0)
+                fmt::print(stderr, ".");
+            if (print_progress && stats.all % 50'000'000 == 0)
+                fmt::print(stderr, " {}m requests\n", stats.all / 1'000'000);
+        }
+
+        return stats;
+    }
+
+    auto on_expire(CacheEntry &entry, u32 now_ts)
+    {
+        auto key = entry.key;
+
+        // check if it was a wasted revalidation
+        if (entry.accesses_since_update == 0)
+            stats.reval_wasted++;
+
+        if (cfg.rv_mode == RevalidateMode::NEVER) {
+            evict(key);
+            return;
+        }
+
+        if (cfg.rv_mode == RevalidateMode::ALWAYS) {
+            reval(entry, now_ts);
+            return;
+        }
+
+        if (cfg.rv_mode == RevalidateMode::ORACLE) {
+            // oracle means reval if future access < ttl and cache cycle
+            // TODO implement cache cycle time check
+            if (entry.next_access_ts <= now_ts + entry.ttl)
+                reval(entry, now_ts);
+            else
+                evict(key);
+            return;
+        }
+
+        if (cfg.rv_mode == RevalidateMode::HEURISTICS) {
+            // check if we should revalidate
+            auto should_revalidate =
+                entry.ttl >= cfg.rv_min_ttl &&
+                entry.accesses_since_update >= cfg.rv_min_freq;
+
+            if (should_revalidate)
+                reval(entry, now_ts);
+            else
+                evict(key);
+
+            return;
+        }
+
+        if (cfg.rv_mode == RevalidateMode::ML) {
+            // TODO implement ML-based revalidation
+            throw std::runtime_error("ML revalidation not implemented");
+        }
+
+        throw std::runtime_error("unknown RevalidateMode");
+    }
+
+    auto sim_request(Req req) -> void
+    {
         stats.all++;
         auto ts = req.ts;
 
@@ -198,46 +274,20 @@ auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
 
         // handle expired entries
         // TODO handle ttstale
-        if (cfg.rv_enable) {
-            // get all expired entries up to current ts
-            while (!expiry_heap.empty() && expiry_heap.top().expiry_ts <= ts) {
-                auto [expiry_ts, key] = expiry_heap.top();
-                expiry_heap.pop();
+        // get all expired entries up to current ts
+        while (!expiry_heap.empty() && expiry_heap.top().expiry_ts <= ts) {
+            auto [expiry_ts, key] = expiry_heap.top();
+            expiry_heap.pop();
 
-                auto entryf = lru_cache.find(key);
-                if (entryf == lru_cache.end())
-                    continue; // already evicted
+            auto entryf = lru_cache.find(key);
+            if (entryf == lru_cache.end())
+                continue; // already evicted
 
-                auto &[k, entry] = *entryf;
-                assert(k == key);
-                assert(entry.ttl + entry.last_update_ts == expiry_ts);
+            auto &[k, entry] = *entryf;
+            assert(k == key);
+            assert(entry.ttl + entry.last_update_ts == expiry_ts);
 
-                // check if we should revalidate
-                auto should_revalidate =
-                    entry.ttl >= cfg.rv_min_ttl &&
-                    entry.accesses_since_update >= cfg.rv_min_freq;
-
-                // revalidate: reset ttl and accesses_since_update
-                if (should_revalidate) {
-                    entry.last_update_ts = ts;
-                    entry.accesses_since_update = 0;
-                    expiry_heap.push(
-                        ExpiryHeapEntry{ts + entry.ttl, entry.key});
-                    stats.revals++;
-                    continue;
-                }
-
-                // check if it was a wasted revalidation
-                if (entry.accesses_since_update == 0)
-                    stats.reval_wasted++;
-
-                if (!cfg.evict_expired)
-                    continue;
-
-                // evict if not revalidated
-                seen_keys.insert(key);
-                lru_cache.evict_key(key);
-            }
+            on_expire(entry, ts);
         }
 
         // handle cache logic
@@ -255,12 +305,13 @@ auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
             CacheEntry new_entry{
                 .key = req.key,
                 .size = req.size,
-                .ttl = (u32)req.ttl,
-                .ttstale = (u32)req.ttstale,
+                .ttl = req.ttl,
+                .ttstale = req.ttstale,
                 .entry_create_ts = ts,
                 .last_access_ts = ts,
                 .last_update_ts = ts,
                 .accesses_since_update = 1,
+                .next_access_ts = req.next_req_ts,
             };
             lru_cache.insert(req.key, new_entry);
             stats.fetches++;
@@ -274,7 +325,7 @@ auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
                     stats.reval_wasted++;
             }
 
-            continue;
+            return;
         }
 
         // hit
@@ -300,13 +351,12 @@ auto run_sim(SimConfig cfg, TraceReader &reader) -> SimStats
         // update entry metadata
         entry.last_access_ts = ts;
         entry.accesses_since_update++;
+        entry.next_access_ts = req.next_req_ts;
 
         // move to head of LRU list (most recently used)
         entry.lru_pos = lru_cache.touch(entry.lru_pos, req.key);
     }
-
-    return stats;
-}
+};
 
 auto main(int argc, char **argv) -> int
 {
@@ -321,7 +371,7 @@ auto main(int argc, char **argv) -> int
 
     ("input-file,i", po::value<vec<str>>(), "input trace file (zstd compressed)")
     ("key-sample-ratio,s", po::value<vec<u64>>(), "key sampling ratio (list)")
-    ("rv-enable,r", po::value<bool>()->default_value(true), "enable revalidation (1/0)")
+    ("rv-mode,m", po::value<vec<str>>(), "revalidation mode (never, always, oracle, heuristics, ml)")
     ("rv-min-ttl,t", po::value<vec<u64>>(), "min ttl to revalidate (list)")
     ("rv-min-freq,f", po::value<vec<u64>>(), "min accesses to revalidate (list)")
     ("rv-max-za,z", po::value<vec<f64>>(), "max zone amplification (list)")
@@ -338,9 +388,12 @@ auto main(int argc, char **argv) -> int
     }
 
     auto capacity = vm["capacity"].as<u64>();
-    auto rv_enable = vm["rv-enable"].as<bool>();
     auto csvout_file = vm["csvout"].as<str>();
     auto parallel = vm["parallel"].as<u32>();
+
+    if (vm.count("rv-mode") == 0)
+        throw std::runtime_error("must specify at least one rv-mode");
+    auto mode = vm["rv-mode"].as<vec<str>>();
 
     auto input_files = vec<str>{"traces/sim/cf_a.bin.zst"};
     if (vm.count("input-file"))
@@ -359,20 +412,39 @@ auto main(int argc, char **argv) -> int
         rv_max_za = vm["rv-max-za"].as<vec<f64>>();
 
     for (auto infile : input_files)
+        if (!std::filesystem::exists(infile))
+            throw std::runtime_error("input file does not exist: " + infile);
+
+    for (auto infile : input_files)
         for (auto ksr : key_sample_ratio)
-            for (auto rvt : rv_min_ttl)
-                for (auto rvf : rv_min_freq)
-                    for (auto rvza : rv_max_za)
-                        configs.push_back(SimConfig{
-                            .infile = infile,
-                            .capacity_gib = capacity,
-                            .key_sample_ratio = ksr,
-                            .evict_expired = true,
-                            .rv_enable = rv_enable,
-                            .rv_min_ttl = rvt,
-                            .rv_min_freq = rvf,
-                            .rv_max_zone_amp = rvza,
-                        });
+            for (auto mode : mode) {
+                auto rv_mode = rv_mode_from_str(mode);
+                if (rv_mode != RevalidateMode::HEURISTICS)
+                    configs.push_back(SimConfig{
+                        .infile = infile,
+                        .capacity_gib = capacity,
+                        .key_sample_ratio = ksr,
+                        .evict_expired = true,
+                        .rv_mode = rv_mode,
+                        .rv_min_ttl = 0,
+                        .rv_min_freq = 0,
+                        .rv_max_zone_amp = 0.0,
+                    });
+                else
+                    for (auto rvt : rv_min_ttl)
+                        for (auto rvf : rv_min_freq)
+                            for (auto rvza : rv_max_za)
+                                configs.push_back(SimConfig{
+                                    .infile = infile,
+                                    .capacity_gib = capacity,
+                                    .key_sample_ratio = ksr,
+                                    .evict_expired = true,
+                                    .rv_mode = rv_mode,
+                                    .rv_min_ttl = rvt,
+                                    .rv_min_freq = rvf,
+                                    .rv_max_zone_amp = rvza,
+                                });
+            }
 
     fmt::print("CSV output file: {}\n", csvout_file);
     auto outf = fmt::output_file(csvout_file);
@@ -394,9 +466,10 @@ auto main(int argc, char **argv) -> int
                 bp::child zstdcat("zstdcat",
                                   bp::std_in<cfg.infile, bp::std_out> zout);
                 TraceReader reader(zout);
+                CacheSimulator sim(cfg);
 
                 auto tstart = tnow();
-                auto stats = run_sim(cfg, reader);
+                auto stats = sim.run_sim(reader, configs.size() == 1);
                 auto total_time = tsince(tstart);
 
                 auto mrps =

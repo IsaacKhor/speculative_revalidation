@@ -6,6 +6,7 @@
 #define DEBUG 0
 #endif
 
+#include <boost/algorithm/string.hpp>
 #include <boost/process.hpp>
 #include <boost/program_options.hpp>
 #include <chrono>
@@ -30,14 +31,56 @@ inline auto tsince(std::chrono::time_point<std::chrono::steady_clock> &start)
         .count();
 }
 
+enum class RevalidateMode {
+    NEVER,
+    ALWAYS,
+    ORACLE,
+    HEURISTICS,
+    ML, // TODO
+};
+
+constexpr auto rv_mode_str(RevalidateMode m) -> str
+{
+    switch (m) {
+    case RevalidateMode::NEVER:
+        return "never";
+    case RevalidateMode::ALWAYS:
+        return "always";
+    case RevalidateMode::ORACLE:
+        return "oracle";
+    case RevalidateMode::HEURISTICS:
+        return "heuristics";
+    case RevalidateMode::ML:
+        return "ml";
+    default:
+        throw std::runtime_error("unknown RevalidateMode");
+    }
+}
+
+inline auto rv_mode_from_str(const str &s) -> RevalidateMode
+{
+    auto lower = boost::algorithm::to_lower_copy(s);
+    if (lower == "never")
+        return RevalidateMode::NEVER;
+    if (lower == "always")
+        return RevalidateMode::ALWAYS;
+    if (lower == "oracle")
+        return RevalidateMode::ORACLE;
+    if (lower == "heuristics")
+        return RevalidateMode::HEURISTICS;
+    if (lower == "ml")
+        return RevalidateMode::ML;
+    throw std::runtime_error("unknown RevalidateMode string: " + s);
+}
+
 struct SimConfig {
     str infile;
     u64 capacity_gib;
     u64 key_sample_ratio;
-    bool evict_expired;
+    bool evict_expired; // unimplemented; always true
 
     // revalidation params
-    bool rv_enable;
+    RevalidateMode rv_mode = RevalidateMode::NEVER;
     u64 rv_min_ttl;
     u64 rv_min_freq;
     f64 rv_max_zone_amp; // not currently implemented
@@ -55,24 +98,26 @@ struct SimConfig {
     inline auto repr() const -> str
     {
         return fmt::format(
-            "SimConfig(infile={}, capacity_mb={}, key_sample_ratio={}, "
+            "SimConfig(infile={}, capacity_gib={}, key_sample_ratio={}, "
             "evict_expired={}, "
-            "rv_enable={}, rv_min_ttl={}, rv_min_freq={}, rv_max_zone_amp={})",
-            infile, capacity_gib, key_sample_ratio, evict_expired, rv_enable,
-            rv_min_ttl, rv_min_freq, rv_max_zone_amp);
+            "rv_mode={}, rv_min_ttl={}, rv_min_freq={}, rv_max_zone_amp={}"
+            ")",
+            infile, capacity_gib, key_sample_ratio, evict_expired,
+            rv_mode_str(rv_mode), rv_min_ttl, rv_min_freq, rv_max_zone_amp);
     }
 
     inline static auto csv_hdr() -> str
     {
         return "infile,capacity_mb,key_sample_ratio,evict_expired,rv_enable,rv_"
-               "min_ttl,rv_min_freq,rv_max_zone_amp";
+               "min_ttl,rv_min_freq,rv_max_zone_amp,enable_oracle";
     }
 
     inline auto csv() const -> str
     {
         return fmt::format("{},{},{},{},{},{},{},{}", infile_base(),
                            capacity_gib, key_sample_ratio, evict_expired,
-                           rv_enable, rv_min_ttl, rv_min_freq, rv_max_zone_amp);
+                           rv_mode_str(rv_mode), rv_min_ttl, rv_min_freq,
+                           rv_max_zone_amp);
     }
 };
 

@@ -2,6 +2,14 @@
 
 xmake
 
+# baseline
+xmake r sim -s1 --parallel=16 --capacity=2048 \
+    -itraces/sim/cf_{a,c,e,g}.bin.zst \
+    -itraces/sim/fb_{a,b,c}.bin.zst \
+    -itraces/sim/wm_t.bin.zst \
+    --rv-mode={never,always,oracle} \
+    --csvout=results/baseline.csv
+
 # cf traces
 # xmake r sim -s1 --parallel=16 --capacity=2048 \
 #     -itraces/sim/cf_{a,c,e,g}.bin.zst \
