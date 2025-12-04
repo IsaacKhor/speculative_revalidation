@@ -539,7 +539,7 @@ auto main(int argc, char **argv) -> int
                         .infile = infile,
                         .capacity_gib = capacity,
                         .key_sample_ratio = ksr,
-                        .rv_mode = RevalidateMode::ORACLE,
+                        .rv_mode = rv_mode,
                     });
                 }
             }

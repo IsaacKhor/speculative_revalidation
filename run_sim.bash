@@ -3,15 +3,7 @@ set -xeuo pipefail
 
 xmake
 
-runnum=2
-
-# baseline
-xmake r sim -s1 --parallel=16 --capacity=2048 \
-    -itraces/sim/cf_{a..h}.bin.zst \
-    -itraces/sim/fb_{a..c}.bin.zst \
-    -itraces/sim/wm_t.bin.zst \
-    --rv-mode={never,oracle} \
-    --csvout=results/r${runnum}_baseline.csv
+runnum=4
 
 # get baseline expiry traces
 # rm -f traces/expiry/*.csv.zst
@@ -26,13 +18,33 @@ xmake r sim -s1 --parallel=16 --capacity=2048 \
 #     zstd --rm -o traces/expiry/$(basename "$f").zst "$f"
 # done
 
+# baseline
+xmake r sim -s1 --parallel=16 --capacity=2048 \
+    -itraces/sim/cf_{a..h}.bin.zst \
+    -itraces/sim/fb_{a..c}.bin.zst \
+    -itraces/sim/wm_t.bin.zst \
+    --rv-mode={never,oracle} \
+    --csvout=results/r${runnum}_baseline.csv
+
 # ml models, cf
-# xmake r sim -s1 -p16 -c2048 \
-#     -itraces/sim/cf_{a,c,e,g}.bin.zst \
-#     --rv-mode=ml \
-#     --ml-model-path=models/rfc_cf_all.onnx \
-#     --ml-conf-thres={0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1} \
-#     --csvout=results/r${runnum}_ml_cf_rfc.csv
+xmake r sim -s1 -p16 -c2048 \
+    -itraces/sim/cf_{a,c,e,g}.bin.zst \
+    -itraces/sim/fb_{a,b,c}.bin.zst \
+    -itraces/sim/wm_t.bin.zst \
+    --rv-mode=ml \
+    --ml-model-path=models/rfc_cf_all_v4.onnx \
+    --ml-conf-thres={0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1} \
+    --csvout=results/r${runnum}_ml_cf_rfc.csv
+
+# ml models, fb
+xmake r sim -s1 -p16 -c2048 \
+    -itraces/sim/cf_{a,c,e,g}.bin.zst \
+    -itraces/sim/fb_{a,b,c}.bin.zst \
+    -itraces/sim/wm_t.bin.zst \
+    --rv-mode=ml \
+    --ml-model-path=models/rfc_fb_all_v4.onnx \
+    --ml-conf-thres={0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1} \
+    --csvout=results/r${runnum}_ml_fb_rfc.csv
 
 # cf traces heuristics
 # xmake r sim -s1 --parallel=16 --capacity=2048 \
