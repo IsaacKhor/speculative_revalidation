@@ -22,7 +22,7 @@ def _parse_args() -> argparse.Namespace:
         description='Convert trace CSV rows to binary format expected by the simulator.')
     parser.add_argument('--format', choices=('cf', 'fb23', 'wm'),
                         default='cf', help='Input trace format (default: cf).')
-    parser.add_argument('--progress', action='store_true', default=False,
+    parser.add_argument('--progress', action='store_true', default=True,
                         help='Show progress output.')
     return parser.parse_args()
 
@@ -121,7 +121,7 @@ def _parse_cf(parts: List[str]) -> tuple[int, int, int, int, int, int, int, bool
     return ts, key, zone, size, ttl, ttstale, mime, is_purge
 
 
-def _parse_fb23(parts: List[str]) -> tuple[int, int, int, int, int, int, int, bool] | None:
+def _parse_fb23(parts: List[str]) -> tuple[int, int, int, int, int, int, int, bool] | tuple[()]:
     if len(parts) < 15:
         raise ValueError(f'invalid FB23 row: {parts!r}')
     ts = int(parts[0].strip()) & _MASK64
@@ -132,7 +132,7 @@ def _parse_fb23(parts: List[str]) -> tuple[int, int, int, int, int, int, int, bo
     objsize = int(parts[3].strip())
     respsize = int(parts[4].strip())
     if objsize < 0 and respsize < 0:
-        return None
+        return ()
     size = objsize if objsize > 0 else respsize
     ttl = int(float(parts[8].strip())) & _MASK64
     zone = 0

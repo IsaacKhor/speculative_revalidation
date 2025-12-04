@@ -1,9 +1,22 @@
 #pragma once
 
-#ifdef DEBUG
-#define DEBUG 1
-#else
+#ifdef NDEBUG
 #define DEBUG 0
+#define FAIL(msg)                                                              \
+    do {                                                                       \
+        fmt::print(stderr, "FATAL: {}\n", msg);                                \
+        std::abort();                                                          \
+    } while (0)
+#define breakpoint()
+#else
+#define DEBUG 1
+#define FAIL(msg)                                                              \
+    do {                                                                       \
+        fmt::print(stderr, "FATAL: {}\n", msg);                                \
+        asm("int3; nop");                                                      \
+        throw std::runtime_error(msg);                                         \
+    } while (0)
+#define breakpoint() asm("int3; nop");
 #endif
 
 #include <boost/algorithm/string.hpp>
@@ -14,13 +27,15 @@
 #include <fmt/core.h>
 #include <vector>
 
-#include "model.h"
-
 namespace bp = boost::process;
+using f32 = float;
 using f64 = double;
 using u64 = uint64_t;
 using u32 = uint32_t;
+using i64 = int64_t;
+using i32 = int32_t;
 using str = std::string;
+using strv = std::string_view;
 template <typename T> using vec = std::vector<T>;
 
 inline auto tnow() { return std::chrono::steady_clock::now(); }
@@ -53,7 +68,7 @@ constexpr auto rv_mode_str(RevalidateMode m) -> str
     case RevalidateMode::ML:
         return "ml";
     default:
-        throw std::runtime_error("unknown RevalidateMode");
+        FAIL("unknown RevalidateMode");
     }
 }
 
@@ -70,20 +85,24 @@ inline auto rv_mode_from_str(const str &s) -> RevalidateMode
         return RevalidateMode::HEURISTICS;
     if (lower == "ml")
         return RevalidateMode::ML;
-    throw std::runtime_error("unknown RevalidateMode string: " + s);
+    FAIL("unknown RevalidateMode string: " + s);
 }
 
 struct SimConfig {
-    str infile;
-    u64 capacity_gib;
-    u64 key_sample_ratio;
-    bool evict_expired; // unimplemented; always true
-
-    // revalidation params
+    str infile;                 // must be zstd-compressed binary trace
+    u64 capacity_gib = 2048;    // cache capacity; reduced by key_sample_ratio
+    u64 key_sample_ratio = 1;   // only sample 1 in N keys
+    FILE *trace_outf = nullptr; // expiry trace file output, null for none
     RevalidateMode rv_mode = RevalidateMode::NEVER;
-    u64 rv_min_ttl;
-    u64 rv_min_freq;
-    f64 rv_max_zone_amp; // not currently implemented
+
+    // ml params
+    str model_path = "";
+    f32 conf_thres = 1;
+
+    // heuristics params
+    u64 rv_min_ttl = 0;
+    u64 rv_min_freq = 0;
+    f64 rv_max_zone_amp = 0; // not currently implemented
 
     inline auto infile_base() const -> str
     {
@@ -98,25 +117,22 @@ struct SimConfig {
     inline auto repr() const -> str
     {
         return fmt::format(
-            "SimConfig(infile={}, capacity_gib={}, key_sample_ratio={}, "
-            "evict_expired={}, "
-            "rv_mode={}, rv_min_ttl={}, rv_min_freq={}, rv_max_zone_amp={}"
-            ")",
-            infile, capacity_gib, key_sample_ratio, evict_expired,
-            rv_mode_str(rv_mode), rv_min_ttl, rv_min_freq, rv_max_zone_amp);
+            "SimConfig(in={}, cache_gib={}, ksr={}, mode={}, model={}, "
+            "mlthres={}, rv_min_ttl={}, rv_min_freq={}, rv_max_za={})",
+            infile, capacity_gib, key_sample_ratio, rv_mode_str(rv_mode),
+            model_path, conf_thres, rv_min_ttl, rv_min_freq, rv_max_zone_amp);
     }
 
     inline static auto csv_hdr() -> str
     {
-        return "infile,capacity_mb,key_sample_ratio,evict_expired,rv_enable,rv_"
-               "min_ttl,rv_min_freq,rv_max_zone_amp,enable_oracle";
+        return "in,gib,ksr,mode,model,mlthres,rv_min_ttl,rv_min_freq,rv_max_za";
     }
 
     inline auto csv() const -> str
     {
-        return fmt::format("{},{},{},{},{},{},{},{}", infile_base(),
-                           capacity_gib, key_sample_ratio, evict_expired,
-                           rv_mode_str(rv_mode), rv_min_ttl, rv_min_freq,
+        return fmt::format("{},{},{},{},{},{},{},{},{}", infile_base(),
+                           capacity_gib, key_sample_ratio, rv_mode_str(rv_mode),
+                           model_path, conf_thres, rv_min_ttl, rv_min_freq,
                            rv_max_zone_amp);
     }
 };
@@ -135,9 +151,9 @@ struct SimStats {
     // total_revals = hit_reval + reval_wasted + reval_pending
     // total_fetches = all miss + total_revals
     // TODO make a per-zone version
-    u64 fetches = 0;
+    u64 fetches = 0; // excluding revalidations, misses only
     u64 revals = 0;
-    u64 reval_wasted = 0;
+    u64 rv_wasted = 0;
 
     inline auto human_str() const -> str
     {
@@ -152,17 +168,17 @@ struct SimStats {
         auto all_miss = miss_mandatory + miss_expired + miss_evicted;
 
         auto good = hit_reval;
-        auto bad = reval_wasted;
+        auto bad = rv_wasted;
         auto pending = revals - good - bad;
         auto revals_pc = (double)revals / fetches;
         auto good_pc = (double)good / fetches;
         auto pending_pc = (double)pending / fetches;
-        auto wasted_pc = (double)reval_wasted / fetches;
+        auto wasted_pc = (double)rv_wasted / fetches;
 
         auto amp_lower = (double)(bad) / (double)(all_miss);
         auto amp_upper = (double)(bad + pending) / (double)(all_miss);
 
-        auto revals_wasted_pc = (double)reval_wasted / (double)revals * 100.0;
+        auto revals_wasted_pc = (double)rv_wasted / (double)revals * 100.0;
 
         auto cachestr = fmt::format(
             R"(
@@ -198,7 +214,7 @@ Amp: {:.02f} - {:.02f}x
     {
         return fmt::format("{},{},{},{},{},{},{},{},{},{}", all, hit_fresh,
                            hit_reval, hit_stale, miss_mandatory, miss_expired,
-                           miss_evicted, fetches, revals, reval_wasted);
+                           miss_evicted, fetches, revals, rv_wasted);
     }
 
     inline static auto csv_hdr() -> str

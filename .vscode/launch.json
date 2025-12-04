@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Sim oracle",
+            "type": "xmake",
+            "request": "launch",
+            "target": "sim",
+            "stopAtEntry": false,
+            "args": [
+                "--key-sample-ratio=1",
+                "--parallel=1",
+                "--capacity=2048",
+                "--input-file=traces/sim/cf_a.bin.zst",
+                "--rv-mode=oracle",
+                "--csvout=/dev/null"
+            ],
+        },
+        {
+            "name": "Sim ml",
+            "type": "xmake",
+            "request": "launch",
+            "target": "sim",
+            "stopAtEntry": false,
+            "args": [
+                "--key-sample-ratio=1",
+                "--parallel=1",
+                "--capacity=2048",
+                "--input-file=traces/sim/cf_a.bin.zst",
+                "--rv-mode=ml",
+                "--ml-model-path=models/rfc_cf_all.onnx",
+                "--ml-conf-thres=0.5",
+                "--csvout=/dev/null"
+            ],
+        }
+    ],
+}

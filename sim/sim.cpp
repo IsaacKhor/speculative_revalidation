@@ -1,6 +1,9 @@
+#include "libonnxruntime/onnxruntime_cxx_api.h"
+#include "model.h"
 #include "utils.hpp"
+#include <absl/container/flat_hash_map.h>
+#include <absl/container/flat_hash_set.h>
 #include <absl/container/node_hash_map.h>
-#include <absl/container/node_hash_set.h>
 #include <algorithm>
 #include <boost/program_options.hpp>
 #include <boost/program_options/variables_map.hpp>
@@ -35,27 +38,33 @@ class TraceReader
     bp::ipstream &zout;
 };
 
+struct ZoneStats {
+    u64 fetches = 0;   // all origin fetches, revals and misses
+    u64 revals = 0;    // revalidations only
+    u64 rv_wasted = 0; // revalidations that were confirmed wasted
+    u64 rv_good = 0;   // revalidations that were confirmed useful
+};
+
 struct CacheEntry {
     u64 key;
     u64 size;
     u32 ttl;
     u32 ttstale;
     u32 entry_create_ts;
+    u32 accesses_since_update;
     u32 last_access_ts;
     u32 last_update_ts;
-    u32 accesses_since_update;
     u32 next_access_ts;
+    u32 content_type;
+    ZoneStats *zs;
     std::list<u64>::iterator lru_pos;
 };
 
-// using cachemap = absl::node_hash_map<u64, CacheEntry>;
-// using keyset = absl::node_hash_set<u64>;
-using cachemap = std::unordered_map<u64, CacheEntry>;
-using keyset = std::unordered_set<u64>;
+using cachemap_t = absl::node_hash_map<u64, CacheEntry>;
 
 struct ExpiryHeapEntry {
-    u64 expiry_ts;
     u64 key;
+    u64 expiry_ts;
 
     bool operator>(const ExpiryHeapEntry &other) const
     {
@@ -84,18 +93,72 @@ class ExpiryHeap
   private:
 };
 
+class RevalPredictor
+{
+  private:
+    static constexpr const u32 IN_FEATURES = 6;
+    static constexpr const u32 OUT_FEATURES = 2;
+    static constexpr const char *inames[1] = {"in"};
+    static constexpr const char *onames[1] = {"probabilities"};
+
+    Ort::Env env = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "predictor");
+    Ort::Session session;
+    Ort::MemoryInfo meminfo =
+        Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+    std::array<i64, 2> ishape{1, IN_FEATURES};
+    std::array<i64, 2> oshape{1, OUT_FEATURES};
+    Ort::Value itensor;
+    Ort::Value otensor;
+    std::array<f32, IN_FEATURES> idata;
+    std::array<f32, OUT_FEATURES> oprob;
+
+  public:
+    RevalPredictor(const str model_path)
+        : session(env, model_path.c_str(), Ort::SessionOptions{})
+    {
+        itensor = Ort::Value::CreateTensor<f32>(
+            meminfo, idata.data(), idata.size(), ishape.data(), ishape.size());
+        otensor = Ort::Value::CreateTensor<f32>(
+            meminfo, oprob.data(), oprob.size(), oshape.data(), oshape.size());
+    }
+
+    auto predict(u32 ttl, u32 freq, u32 generations, u32 t_since_last,
+                 u32 mime) -> f32
+    {
+        static const auto runopts = Ort::RunOptions{};
+        idata[0] = static_cast<f32>(ttl);
+        idata[1] = static_cast<f32>(freq);
+        idata[2] = static_cast<f32>(generations);
+        idata[3] = static_cast<f32>(t_since_last);
+        idata[4] = static_cast<f32>(t_since_last) / static_cast<f32>(ttl);
+        idata[5] = static_cast<f32>(mime);
+        session.Run(runopts, inames, &itensor, 1, onames, &otensor, 1);
+        return oprob[1];
+    }
+
+    auto predict(CacheEntry &e, u32 now_ts) -> f32
+    {
+        auto ttl = e.ttl;
+        auto freq = e.accesses_since_update;
+        auto generations = (now_ts - e.entry_create_ts - 1) / ttl;
+        auto t_since_last = now_ts - e.last_access_ts;
+        auto mime = e.content_type;
+        return predict(ttl, freq, generations, t_since_last, mime);
+    }
+};
+
 class LRUCache
 {
   public:
     LRUCache(u64 capacity_bytes) : capacity(capacity_bytes) {}
 
-    // Find an entry in the cache
-    auto find(u64 key) -> cachemap::iterator { return cache.find(key); }
-
-    auto end() -> cachemap::iterator { return cache.end(); }
-
-    // Get entry by key (assumes key exists)
-    auto get(u64 key) -> CacheEntry & { return cache.at(key); }
+    // Check if cache is over capacity
+    auto is_over_capacity() const { return current_size > capacity; }
+    auto get_current_size() const { return current_size; }
+    auto &tail() { return find(lru_list.front())->second; }
+    auto end() -> cachemap_t::iterator { return cache.end(); }
+    auto find(u64 key) -> cachemap_t::iterator { return cache.find(key); }
+    auto at(u64 key) -> CacheEntry & { return cache.at(key); }
 
     // Insert a new cache entry
     void insert(u64 key, const CacheEntry &entry)
@@ -118,44 +181,15 @@ class LRUCache
     }
 
     // Remove an entry from the cache (by iterator)
-    void erase(cachemap::iterator it)
+    auto erase(cachemap_t::iterator it)
     {
         lru_list.erase(it->second.lru_pos);
         current_size -= it->second.size;
         cache.erase(it);
     }
 
-    // Remove an entry from the cache (by key)
-    void evict_key(u64 key)
-    {
-        auto it = cache.find(key);
-        if (it != cache.end())
-            erase(it);
-    }
-
-    // Evict the LRU entry and return the evicted entry
-    auto evict_lru() -> CacheEntry
-    {
-        auto lru_key = lru_list.front();
-        lru_list.pop_front();
-
-        auto it = cache.find(lru_key);
-        auto entry = it->second;
-        if (it != cache.end()) {
-            current_size -= it->second.size;
-            cache.erase(it);
-        }
-
-        return entry;
-    }
-
-    // Check if cache is over capacity
-    bool is_over_capacity() const { return current_size > capacity; }
-    auto get_current_size() const -> u64 { return current_size; }
-    auto get_lru_key() const -> u64 { return lru_list.front(); }
-
   private:
-    cachemap cache;
+    cachemap_t cache;
     std::list<u64> lru_list;
     u64 capacity = 0;
     u64 current_size = 0;
@@ -167,28 +201,57 @@ class CacheSimulator
     SimConfig cfg;
     LRUCache lru_cache;
     ExpiryHeap expiry_heap;
-    keyset seen_keys;
+    absl::flat_hash_set<u64> seen_keys;
+    absl::node_hash_map<u64, ZoneStats> zone_stats;
     SimStats stats;
+    FILE *trace_outf;
+    std::optional<RevalPredictor> ml_predictor = std::nullopt;
 
   public:
     CacheSimulator(SimConfig cfg)
         : cfg(cfg), lru_cache(cfg.capacity_gib * 1024 * 1024 * 1024 /
-                              cfg.key_sample_ratio)
+                              cfg.key_sample_ratio),
+          trace_outf(cfg.trace_outf)
     {
+        if (cfg.rv_mode == RevalidateMode::ML)
+            ml_predictor.emplace(cfg.model_path);
     }
 
-    auto evict(u64 key)
+    auto evict(CacheEntry &entry)
     {
+        // check if it was a wasted revalidation
+        if (entry.entry_create_ts < entry.last_update_ts &&
+            entry.accesses_since_update == 0) {
+            stats.rv_wasted++;
+            entry.zs->rv_wasted++;
+        }
+
+        auto key = entry.key;
         seen_keys.insert(key);
-        lru_cache.evict_key(key);
+        lru_cache.erase(lru_cache.find(key));
     }
 
-    auto reval(CacheEntry &entry, u64 now_ts)
+    auto reval(CacheEntry &entry, u32 now_ts)
     {
+        // check if it was a wasted revalidation
+        if (entry.entry_create_ts < entry.last_update_ts &&
+            entry.accesses_since_update == 0) {
+            stats.rv_wasted++;
+            entry.zs->rv_wasted++;
+        }
+
+        stats.revals++;
+        entry.zs->revals++;
         entry.last_update_ts = now_ts;
         entry.accesses_since_update = 0;
-        expiry_heap.push(ExpiryHeapEntry{now_ts + entry.ttl, entry.key});
-        stats.revals++;
+
+        if (entry.zs->revals > 2)
+            breakpoint();
+
+        // don't bother if ttl is too big (trace lasts roughly 1 month)
+        if (entry.ttl > 60 * 60 * 24 * 30)
+            return;
+        expiry_heap.push(ExpiryHeapEntry{entry.key, now_ts + entry.ttl});
     }
 
     auto run_sim(TraceReader &reader, bool print_progress) -> SimStats
@@ -205,25 +268,32 @@ class CacheSimulator
 
             sim_request(req);
 
-            if (print_progress && stats.all % 1'000'000 == 0)
+            if (print_progress && stats.all % 100'000 == 0)
                 fmt::print(stderr, ".");
-            if (print_progress && stats.all % 50'000'000 == 0)
+            if (print_progress && stats.all % 5'000'000 == 0)
                 fmt::print(stderr, " {}m requests\n", stats.all / 1'000'000);
         }
 
         return stats;
     }
 
+    auto record_expiry(CacheEntry &entry, u32 now_ts)
+    {
+        if (trace_outf == nullptr)
+            return;
+
+        auto zs = *entry.zs;
+        fmt::print(trace_outf, "{},{},{},{},{},{},{},{},{},{},{}\n", now_ts,
+                   entry.next_access_ts, entry.ttl, entry.entry_create_ts,
+                   entry.accesses_since_update, entry.last_access_ts,
+                   entry.last_update_ts, zs.revals, zs.rv_good, zs.rv_wasted,
+                   entry.content_type);
+    }
+
     auto on_expire(CacheEntry &entry, u32 now_ts)
     {
-        auto key = entry.key;
-
-        // check if it was a wasted revalidation
-        if (entry.accesses_since_update == 0)
-            stats.reval_wasted++;
-
         if (cfg.rv_mode == RevalidateMode::NEVER) {
-            evict(key);
+            evict(entry);
             return;
         }
 
@@ -234,11 +304,13 @@ class CacheSimulator
 
         if (cfg.rv_mode == RevalidateMode::ORACLE) {
             // oracle means reval if future access < ttl and cache cycle
-            // TODO implement cache cycle time check
-            if (entry.next_access_ts <= now_ts + entry.ttl)
+
+            // TODO implement cache cycle time check properly
+            if (entry.ttl < 7 * 86400 && entry.next_access_ts > now_ts &&
+                entry.next_access_ts <= now_ts + entry.ttl)
                 reval(entry, now_ts);
             else
-                evict(key);
+                evict(entry);
             return;
         }
 
@@ -251,14 +323,19 @@ class CacheSimulator
             if (should_revalidate)
                 reval(entry, now_ts);
             else
-                evict(key);
+                evict(entry);
 
             return;
         }
 
         if (cfg.rv_mode == RevalidateMode::ML) {
-            // TODO implement ML-based revalidation
-            throw std::runtime_error("ML revalidation not implemented");
+            assert(ml_predictor.has_value());
+            auto confidence = ml_predictor->predict(entry, now_ts);
+            if (confidence >= cfg.conf_thres)
+                reval(entry, now_ts);
+            else
+                evict(entry);
+            return;
         }
 
         throw std::runtime_error("unknown RevalidateMode");
@@ -275,8 +352,8 @@ class CacheSimulator
         // handle expired entries
         // TODO handle ttstale
         // get all expired entries up to current ts
-        while (!expiry_heap.empty() && expiry_heap.top().expiry_ts <= ts) {
-            auto [expiry_ts, key] = expiry_heap.top();
+        while (!expiry_heap.empty() && expiry_heap.top().expiry_ts < ts) {
+            auto [key, expiry_ts] = expiry_heap.top();
             expiry_heap.pop();
 
             auto entryf = lru_cache.find(key);
@@ -287,6 +364,7 @@ class CacheSimulator
             assert(k == key);
             assert(entry.ttl + entry.last_update_ts == expiry_ts);
 
+            record_expiry(entry, ts);
             on_expire(entry, ts);
         }
 
@@ -295,6 +373,11 @@ class CacheSimulator
 
         // miss
         if (entryf == lru_cache.end()) {
+            // get zone
+            if (zone_stats.find(req.zone) == zone_stats.end())
+                zone_stats[req.zone] = ZoneStats{};
+            auto *zs = &zone_stats[req.zone];
+
             // check miss type, is it mandatory or not
             if (seen_keys.find(req.key) == seen_keys.end())
                 stats.miss_mandatory++;
@@ -308,22 +391,22 @@ class CacheSimulator
                 .ttl = req.ttl,
                 .ttstale = req.ttstale,
                 .entry_create_ts = ts,
+                .accesses_since_update = 1,
                 .last_access_ts = ts,
                 .last_update_ts = ts,
-                .accesses_since_update = 1,
                 .next_access_ts = req.next_req_ts,
+                .content_type = req.content_type,
+                .zs = zs,
             };
             lru_cache.insert(req.key, new_entry);
+            expiry_heap.push(ExpiryHeapEntry{req.key, ts + req.ttl});
+
             stats.fetches++;
-            expiry_heap.push(ExpiryHeapEntry{ts + req.ttl, req.key});
+            zs->fetches++;
 
             // evict until under capacity
-            while (lru_cache.is_over_capacity()) {
-                auto evicted_entry = lru_cache.evict_lru();
-                seen_keys.insert(evicted_entry.key);
-                if (evicted_entry.accesses_since_update == 0)
-                    stats.reval_wasted++;
-            }
+            while (lru_cache.is_over_capacity())
+                evict(lru_cache.tail());
 
             return;
         }
@@ -339,14 +422,16 @@ class CacheSimulator
         // fresh: age <= ttl
         // reval: fresh, but # of accesses since last update = 0
         // stale: ttl < age <= ttl + ttstale
-        if (cache_age <= entry.ttl && entry.accesses_since_update > 0)
+        if (cache_age <= entry.ttl && entry.accesses_since_update > 0) {
             stats.hit_fresh++;
-        else if (cache_age <= entry.ttl && entry.accesses_since_update == 0)
+        } else if (cache_age <= entry.ttl && entry.accesses_since_update == 0) {
             stats.hit_reval++;
-        else if (cache_age <= entry.ttl + entry.ttstale)
+            entry.zs->rv_good++;
+        } else if (cache_age <= entry.ttl + entry.ttstale) {
             stats.hit_stale++;
-        else
+        } else {
             stats.miss_expired++;
+        }
 
         // update entry metadata
         entry.last_access_ts = ts;
@@ -368,13 +453,19 @@ auto main(int argc, char **argv) -> int
     ("csvout,o", po::value<str>()->default_value("results.csv"), "all revalidation results output file")
     ("capacity,c", po::value<u64>()->default_value(2048), "cache capacity in GiB")
     ("parallel,p", po::value<u32>()->default_value(1), "number of parallel simulations to run")
-
+    ("trace-expiry,e", po::value<bool>()->default_value(false), "output a trace of expiry events (for ml training, writes to traces/expiry/)")
     ("input-file,i", po::value<vec<str>>(), "input trace file (zstd compressed)")
     ("key-sample-ratio,s", po::value<vec<u64>>(), "key sampling ratio (list)")
     ("rv-mode,m", po::value<vec<str>>(), "revalidation mode (never, always, oracle, heuristics, ml)")
-    ("rv-min-ttl,t", po::value<vec<u64>>(), "min ttl to revalidate (list)")
-    ("rv-min-freq,f", po::value<vec<u64>>(), "min accesses to revalidate (list)")
-    ("rv-max-za,z", po::value<vec<f64>>(), "max zone amplification (list)")
+
+    // heuristics params
+    ("rv-min-ttl", po::value<vec<u64>>()->default_value({}, ""), "min ttl to revalidate (list)")
+    ("rv-min-freq", po::value<vec<u64>>()->default_value({}, ""), "min accesses to revalidate (list)")
+    ("rv-max-za", po::value<vec<f32>>()->default_value({}, ""), "max zone amplification (list)")
+
+    // ml params
+    ("ml-model-path", po::value<str>()->default_value(""), "path to revalidation model file")
+    ("ml-conf-thres", po::value<vec<f32>>()->default_value({}, ""), "threshold at which to revalidate")
     ;
     // clang-format on
 
@@ -390,6 +481,7 @@ auto main(int argc, char **argv) -> int
     auto capacity = vm["capacity"].as<u64>();
     auto csvout_file = vm["csvout"].as<str>();
     auto parallel = vm["parallel"].as<u32>();
+    auto trace_expiry = vm["trace-expiry"].as<bool>();
 
     if (vm.count("rv-mode") == 0)
         throw std::runtime_error("must specify at least one rv-mode");
@@ -398,39 +490,38 @@ auto main(int argc, char **argv) -> int
     auto input_files = vec<str>{"traces/sim/cf_a.bin.zst"};
     if (vm.count("input-file"))
         input_files = vm["input-file"].as<vec<str>>();
-    auto key_sample_ratio = vec<u64>{4};
-    if (vm.count("key-sample-ratio"))
-        key_sample_ratio = vm["key-sample-ratio"].as<vec<u64>>();
-    auto rv_min_ttl = vec<u64>{15};
-    if (vm.count("rv-min-ttl"))
-        rv_min_ttl = vm["rv-min-ttl"].as<vec<u64>>();
-    auto rv_min_freq = vec<u64>{3};
-    if (vm.count("rv-min-freq"))
-        rv_min_freq = vm["rv-min-freq"].as<vec<u64>>();
-    auto rv_max_za = vec<f64>{2};
-    if (vm.count("rv-max-za"))
-        rv_max_za = vm["rv-max-za"].as<vec<f64>>();
+    auto key_sample_ratio = vm["key-sample-ratio"].as<vec<u64>>();
+    auto rv_min_ttl = vm["rv-min-ttl"].as<vec<u64>>();
+    auto rv_min_freq = vm["rv-min-freq"].as<vec<u64>>();
+    auto rv_max_za = vm["rv-max-za"].as<vec<f32>>();
+    auto model_path = vm["ml-model-path"].as<str>();
+    auto conf_thres = vm["ml-conf-thres"].as<vec<f32>>();
 
     for (auto infile : input_files)
         if (!std::filesystem::exists(infile))
-            throw std::runtime_error("input file does not exist: " + infile);
+            FAIL("input file does not exist: " + infile);
+    if (!model_path.empty() && !std::filesystem::exists(model_path))
+        FAIL("model path does not exist: " + model_path);
 
     for (auto infile : input_files)
         for (auto ksr : key_sample_ratio)
             for (auto mode : mode) {
                 auto rv_mode = rv_mode_from_str(mode);
-                if (rv_mode != RevalidateMode::HEURISTICS)
-                    configs.push_back(SimConfig{
-                        .infile = infile,
-                        .capacity_gib = capacity,
-                        .key_sample_ratio = ksr,
-                        .evict_expired = true,
-                        .rv_mode = rv_mode,
-                        .rv_min_ttl = 0,
-                        .rv_min_freq = 0,
-                        .rv_max_zone_amp = 0.0,
-                    });
-                else
+                if (rv_mode == RevalidateMode::ML) {
+                    if (model_path.empty())
+                        FAIL("must specify model-path for ML mode");
+                    if (conf_thres.empty())
+                        FAIL("must specify confidence thresholds for ML mode");
+                    for (auto thres : conf_thres)
+                        configs.push_back(SimConfig{
+                            .infile = infile,
+                            .capacity_gib = capacity,
+                            .key_sample_ratio = ksr,
+                            .rv_mode = rv_mode,
+                            .model_path = model_path,
+                            .conf_thres = thres,
+                        });
+                } else if (rv_mode == RevalidateMode::HEURISTICS) {
                     for (auto rvt : rv_min_ttl)
                         for (auto rvf : rv_min_freq)
                             for (auto rvza : rv_max_za)
@@ -438,13 +529,30 @@ auto main(int argc, char **argv) -> int
                                     .infile = infile,
                                     .capacity_gib = capacity,
                                     .key_sample_ratio = ksr,
-                                    .evict_expired = true,
                                     .rv_mode = rv_mode,
                                     .rv_min_ttl = rvt,
                                     .rv_min_freq = rvf,
                                     .rv_max_zone_amp = rvza,
                                 });
+                } else {
+                    configs.push_back(SimConfig{
+                        .infile = infile,
+                        .capacity_gib = capacity,
+                        .key_sample_ratio = ksr,
+                        .rv_mode = RevalidateMode::ORACLE,
+                    });
+                }
             }
+
+    if (trace_expiry) {
+        for (auto &cfg : configs) {
+            std::filesystem::create_directories("traces/expiry/");
+            auto trace_outpath =
+                fmt::format("traces/expiry/{}.csv", cfg.infile_base());
+            auto f = fopen(trace_outpath.c_str(), "w");
+            cfg.trace_outf = f;
+        }
+    }
 
     fmt::print("CSV output file: {}\n", csvout_file);
     auto outf = fmt::output_file(csvout_file);

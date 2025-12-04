@@ -1,33 +1,49 @@
 #!/usr/bin/env bash
+set -xeuo pipefail
 
 xmake
 
+runnum=2
+
 # baseline
 xmake r sim -s1 --parallel=16 --capacity=2048 \
-    -itraces/sim/cf_{a,c,e,g}.bin.zst \
-    -itraces/sim/fb_{a,b,c}.bin.zst \
+    -itraces/sim/cf_{a..h}.bin.zst \
+    -itraces/sim/fb_{a..c}.bin.zst \
     -itraces/sim/wm_t.bin.zst \
-    --rv-mode={never,always,oracle} \
-    --csvout=results/baseline.csv
+    --rv-mode={never,oracle} \
+    --csvout=results/r${runnum}_baseline.csv
 
-# cf traces
+# get baseline expiry traces
+# rm -f traces/expiry/*.csv.zst
+# xmake r sim -s1 --parallel=16 --capacity=2048 \
+#     -itraces/sim/cf_{a..h}.bin.zst \
+#     -itraces/sim/fb_{a..c}.bin.zst \
+#     -itraces/sim/wm_t.bin.zst \
+#     --trace-expiry=true \
+#     --rv-mode=oracle \
+#     --csvout=/dev/null
+# for f in traces/expiry/*.csv; do
+#     zstd --rm -o traces/expiry/$(basename "$f").zst "$f"
+# done
+
+# ml models, cf
+# xmake r sim -s1 -p16 -c2048 \
+#     -itraces/sim/cf_{a,c,e,g}.bin.zst \
+#     --rv-mode=ml \
+#     --ml-model-path=models/rfc_cf_all.onnx \
+#     --ml-conf-thres={0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1} \
+#     --csvout=results/r${runnum}_ml_cf_rfc.csv
+
+# cf traces heuristics
 # xmake r sim -s1 --parallel=16 --capacity=2048 \
 #     -itraces/sim/cf_{a,c,e,g}.bin.zst \
-#     -itraces/sim/fb23_{a,b,c}.bin.zst \
+#     -itraces/sim/fb_{a,b,c}.bin.zst \
 #     --rv-min-ttl={1,5,15,30,45,60,120} \
 #     --rv-min-freq={1,2,3,4,5,6,7,8} \
-#     --csvout=results/run_0.csv
+#     --csvout=results/r0.csv
 
-xmake r sim -s1 --parallel=16 --capacity=2048 \
-    -itraces/sim/wm_a.bin.zst \
-    --rv-min-ttl={1,5,15,30,45,60,120} \
-    --rv-min-freq={1,2,3,4,5,6,7,8} \
-    --csvout=results/run_1_wm.csv
-
-xmake r sim -s1 --parallel=16 --capacity=2048 \
-    -itraces/sim/wm_a.bin.zst \
-     -itraces/sim/cf_{a,c,e,g}.bin.zst \
-     -itraces/sim/fb23_{a,b,c}.bin.zst \
-    --rv-min-ttl=-1 \
-    --rv-min-freq=-1 \
-    --csvout=results/baseline.csv
+# xmake r sim -s1 --parallel=16 --capacity=2048 \
+#     -itraces/sim/wm_a.bin.zst \
+#     --rv-min-ttl={1,5,15,30,45,60,120} \
+#     --rv-min-freq={1,2,3,4,5,6,7,8} \
+#     --csvout=results/r1_wm.csv
