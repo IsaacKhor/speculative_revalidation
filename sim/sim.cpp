@@ -263,6 +263,10 @@ class CacheSimulator
             if (req.size > 5ull * 1024 * 1024 * 1024) // 5 gib
                 continue;
 
+            // filter out ttl=0
+            if (req.ttl == 0)
+                continue;
+
             if (req.key % cfg.key_sample_ratio != 0) // should be uniformly dist
                 continue;
 
@@ -283,11 +287,11 @@ class CacheSimulator
             return;
 
         auto zs = *entry.zs;
-        fmt::print(trace_outf, "{},{},{},{},{},{},{},{},{},{},{}\n", now_ts,
+        fmt::print(trace_outf, "{},{},{},{},{},{},{},{},{},{},{},{}\n", now_ts,
                    entry.next_access_ts, entry.ttl, entry.entry_create_ts,
                    entry.accesses_since_update, entry.last_access_ts,
                    entry.last_update_ts, zs.revals, zs.rv_good, zs.rv_wasted,
-                   entry.content_type);
+                   entry.content_type, entry.size);
     }
 
     auto on_expire(CacheEntry &entry, u32 now_ts)
@@ -331,7 +335,7 @@ class CacheSimulator
         if (cfg.rv_mode == RevalidateMode::ML) {
             assert(ml_predictor.has_value());
             auto confidence = ml_predictor->predict(entry, now_ts);
-            if (confidence >= cfg.conf_thres)
+            if (confidence > cfg.conf_thres)
                 reval(entry, now_ts);
             else
                 evict(entry);
@@ -557,6 +561,7 @@ auto main(int argc, char **argv) -> int
     fmt::print("CSV output file: {}\n", csvout_file);
     auto outf = fmt::output_file(csvout_file);
     outf.print("{},{}\n", SimConfig::csv_hdr(), SimStats::csv_hdr());
+    outf.flush();
 
     fmt::print("Running {} simulations with parallelism {}\n", configs.size(),
                parallel);
@@ -586,6 +591,7 @@ auto main(int argc, char **argv) -> int
                            j + 1, total_time, mrps, cfg.repr(),
                            stats.human_str());
                 outf.print("{},{}\n", cfg.csv(), stats.csv());
+                outf.flush();
 
                 zstdcat.terminate();
                 zstdcat.wait();
