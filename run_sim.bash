@@ -35,7 +35,7 @@ xmake r sim -s$ksr -p$njobs -c2048 \
     -itraces/sim/wm_t.bin.zst \
     --rv-mode=ml \
     --ml-model-path=models/rfc_cf_all_v4.onnx \
-    --ml-conf-thres={0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1} \
+    --ml-conf-thres={0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1} \
     --csvout=results/r${runnum}i${iter}_ml_cf_rfc.csv
 
 # ml models, fb
@@ -44,7 +44,7 @@ xmake r sim -s$ksr -p$njobs -c2048 \
     -itraces/sim/wm_t.bin.zst \
     --rv-mode=ml \
     --ml-model-path=models/rfc_fb_all_v4.onnx \
-    --ml-conf-thres={0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1} \
+    --ml-conf-thres={0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1} \
     --csvout=results/r${runnum}i${iter}_ml_fb_rfc.csv
 
 # cf traces heuristics
