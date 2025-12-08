@@ -96,7 +96,7 @@ class ExpiryHeap
 class RevalPredictor
 {
   private:
-    static constexpr const u32 IN_FEATURES = 6;
+    static constexpr const u32 IN_FEATURES = 7;
     static constexpr const u32 OUT_FEATURES = 2;
     static constexpr const char *inames[1] = {"in"};
     static constexpr const char *onames[1] = {"probabilities"};
@@ -122,8 +122,8 @@ class RevalPredictor
             meminfo, oprob.data(), oprob.size(), oshape.data(), oshape.size());
     }
 
-    auto predict(u32 ttl, u32 freq, u32 generations, u32 t_since_last,
-                 u32 mime) -> f32
+    auto predict(u32 ttl, u32 freq, u32 generations, u32 t_since_last, u32 mime,
+                 u32 size) -> f32
     {
         static const auto runopts = Ort::RunOptions{};
         idata[0] = static_cast<f32>(ttl);
@@ -132,6 +132,7 @@ class RevalPredictor
         idata[3] = static_cast<f32>(t_since_last);
         idata[4] = static_cast<f32>(t_since_last) / static_cast<f32>(ttl);
         idata[5] = static_cast<f32>(mime);
+        idata[6] = static_cast<f32>(size);
         session.Run(runopts, inames, &itensor, 1, onames, &otensor, 1);
         return oprob[1];
     }
@@ -143,7 +144,8 @@ class RevalPredictor
         auto generations = (now_ts - e.entry_create_ts - 1) / ttl;
         auto t_since_last = now_ts - e.last_access_ts;
         auto mime = e.content_type;
-        return predict(ttl, freq, generations, t_since_last, mime);
+        auto size = e.size;
+        return predict(ttl, freq, generations, t_since_last, mime, size);
     }
 };
 
@@ -468,7 +470,7 @@ auto main(int argc, char **argv) -> int
     ("rv-max-za", po::value<vec<f32>>()->default_value({}, ""), "max zone amplification (list)")
 
     // ml params
-    ("ml-model-path", po::value<str>()->default_value(""), "path to revalidation model file")
+    ("ml-model-path", po::value<vec<str>>()->default_value({}, ""), "path to revalidation model file")
     ("ml-conf-thres", po::value<vec<f32>>()->default_value({}, ""), "threshold at which to revalidate")
     ;
     // clang-format on
@@ -498,14 +500,15 @@ auto main(int argc, char **argv) -> int
     auto rv_min_ttl = vm["rv-min-ttl"].as<vec<u64>>();
     auto rv_min_freq = vm["rv-min-freq"].as<vec<u64>>();
     auto rv_max_za = vm["rv-max-za"].as<vec<f32>>();
-    auto model_path = vm["ml-model-path"].as<str>();
+    auto model_path = vm["ml-model-path"].as<vec<str>>();
     auto conf_thres = vm["ml-conf-thres"].as<vec<f32>>();
 
     for (auto infile : input_files)
         if (!std::filesystem::exists(infile))
             FAIL("input file does not exist: " + infile);
-    if (!model_path.empty() && !std::filesystem::exists(model_path))
-        FAIL("model path does not exist: " + model_path);
+    for (auto mpath : model_path)
+        if (!std::filesystem::exists(mpath))
+            FAIL("model path does not exist: " + mpath);
 
     for (auto infile : input_files)
         for (auto ksr : key_sample_ratio)
@@ -516,15 +519,16 @@ auto main(int argc, char **argv) -> int
                         FAIL("must specify model-path for ML mode");
                     if (conf_thres.empty())
                         FAIL("must specify confidence thresholds for ML mode");
-                    for (auto thres : conf_thres)
-                        configs.push_back(SimConfig{
-                            .infile = infile,
-                            .capacity_gib = capacity,
-                            .key_sample_ratio = ksr,
-                            .rv_mode = rv_mode,
-                            .model_path = model_path,
-                            .conf_thres = thres,
-                        });
+                    for (auto mpath : model_path)
+                        for (auto thres : conf_thres)
+                            configs.push_back(SimConfig{
+                                .infile = infile,
+                                .capacity_gib = capacity,
+                                .key_sample_ratio = ksr,
+                                .rv_mode = rv_mode,
+                                .model_path = mpath,
+                                .conf_thres = thres,
+                            });
                 } else if (rv_mode == RevalidateMode::HEURISTICS) {
                     for (auto rvt : rv_min_ttl)
                         for (auto rvf : rv_min_freq)
