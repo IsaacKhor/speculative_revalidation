@@ -19,6 +19,7 @@
 #include <vector>
 #include <zstd.h>
 
+const u64 MAX_EXPIRY_TIME = 30 * 24 * 60 * 60; // 30 days
 const bool ENABLE_FORCE_TTL = false;
 const u64 FORCE_TTL = 86400 * 2;
 namespace po = boost::program_options;
@@ -39,8 +40,9 @@ class TraceReader
 };
 
 struct ZoneStats {
-    u64 fetches = 0;   // all origin fetches, revals and misses
-    u64 revals = 0;    // revalidations only
+    u64 hits = 0;      // hits
+    u64 misses = 0;    // misses (which in turn cause fetches)
+    u64 rv_fetch = 0;  // revalidations only
     u64 rv_wasted = 0; // revalidations that were confirmed wasted
     u64 rv_good = 0;   // revalidations that were confirmed useful
 };
@@ -64,7 +66,7 @@ using cachemap_t = absl::node_hash_map<u64, CacheEntry>;
 
 struct ExpiryHeapEntry {
     u64 key;
-    u64 expiry_ts;
+    u32 expiry_ts;
 
     bool operator>(const ExpiryHeapEntry &other) const
     {
@@ -77,6 +79,8 @@ class ExpiryHeap
   public:
     void push(const ExpiryHeapEntry &entry)
     {
+        // if (entry.expiry_ts > MAX_EXPIRY_TIME)
+        //     return;
         heap.push_back(entry);
         std::push_heap(heap.begin(), heap.end(), std::greater<>());
     }
@@ -242,18 +246,16 @@ class CacheSimulator
             entry.zs->rv_wasted++;
         }
 
-        stats.revals++;
-        entry.zs->revals++;
+        stats.rv_fetch++;
+        entry.zs->rv_fetch++;
         entry.last_update_ts = now_ts;
         entry.accesses_since_update = 0;
 
-        if (entry.zs->revals > 2)
-            breakpoint();
-
         // don't bother if ttl is too big (trace lasts roughly 1 month)
-        if (entry.ttl > 60 * 60 * 24 * 30)
+        if (entry.ttl > 86400 * 30)
             return;
-        expiry_heap.push(ExpiryHeapEntry{entry.key, now_ts + entry.ttl});
+
+        expiry_heap.push(ExpiryHeapEntry{entry.key, capadd(now_ts, entry.ttl)});
     }
 
     auto run_sim(TraceReader &reader, bool print_progress) -> SimStats
@@ -292,7 +294,7 @@ class CacheSimulator
         fmt::print(trace_outf, "{},{},{},{},{},{},{},{},{},{},{},{}\n", now_ts,
                    entry.next_access_ts, entry.ttl, entry.entry_create_ts,
                    entry.accesses_since_update, entry.last_access_ts,
-                   entry.last_update_ts, zs.revals, zs.rv_good, zs.rv_wasted,
+                   entry.last_update_ts, zs.rv_fetch, zs.rv_good, zs.rv_wasted,
                    entry.content_type, entry.size);
     }
 
@@ -311,9 +313,12 @@ class CacheSimulator
         if (cfg.rv_mode == RevalidateMode::ORACLE) {
             // oracle means reval if future access < ttl and cache cycle
 
-            // TODO implement cache cycle time check properly
-            if (entry.ttl < 7 * 86400 && entry.next_access_ts > now_ts &&
-                entry.next_access_ts <= now_ts + entry.ttl)
+            // different thresholds: how many ttl's ahead to look?
+            auto allowable_delay = capmul(entry.ttl, cfg.conf_thres);
+
+            // TODO implement cache cycle time check
+            if (entry.next_access_ts >= now_ts &&
+                entry.next_access_ts <= capadd(now_ts, allowable_delay))
                 reval(entry, now_ts);
             else
                 evict(entry);
@@ -368,7 +373,7 @@ class CacheSimulator
 
             auto &[k, entry] = *entryf;
             assert(k == key);
-            assert(entry.ttl + entry.last_update_ts == expiry_ts);
+            assert(capadd(entry.ttl, entry.last_update_ts) == expiry_ts);
 
             record_expiry(entry, ts);
             on_expire(entry, ts);
@@ -405,10 +410,10 @@ class CacheSimulator
                 .zs = zs,
             };
             lru_cache.insert(req.key, new_entry);
-            expiry_heap.push(ExpiryHeapEntry{req.key, ts + req.ttl});
+            expiry_heap.push(ExpiryHeapEntry{req.key, capadd(ts, req.ttl)});
 
-            stats.fetches++;
-            zs->fetches++;
+            stats.misses_all++;
+            zs->misses++;
 
             // evict until under capacity
             while (lru_cache.is_over_capacity())
@@ -420,6 +425,9 @@ class CacheSimulator
         // hit
         auto &[k, entry] = *entryf;
         assert(k == req.key);
+
+        if (entry.next_access_ts != ts)
+            breakpoint();
 
         // determine if hit is fresh or stale
         auto cache_age = ts - entry.last_update_ts;
@@ -440,6 +448,7 @@ class CacheSimulator
         }
 
         // update entry metadata
+        entry.zs->hits++;
         entry.last_access_ts = ts;
         entry.accesses_since_update++;
         entry.next_access_ts = req.next_req_ts;
@@ -471,7 +480,7 @@ auto main(int argc, char **argv) -> int
 
     // ml params
     ("ml-model-path", po::value<vec<str>>()->default_value({}, ""), "path to revalidation model file")
-    ("ml-conf-thres", po::value<vec<f32>>()->default_value({}, ""), "threshold at which to revalidate")
+    ("ml-conf-thres,t", po::value<vec<f32>>()->default_value({}, ""), "threshold at which to revalidate")
     ;
     // clang-format on
 
@@ -542,6 +551,15 @@ auto main(int argc, char **argv) -> int
                                     .rv_min_freq = rvf,
                                     .rv_max_zone_amp = rvza,
                                 });
+                } else if (rv_mode == RevalidateMode::ORACLE) {
+                    for (auto thres : conf_thres)
+                        configs.push_back(SimConfig{
+                            .infile = infile,
+                            .capacity_gib = capacity,
+                            .key_sample_ratio = ksr,
+                            .rv_mode = rv_mode,
+                            .conf_thres = thres,
+                        });
                 } else {
                     configs.push_back(SimConfig{
                         .infile = infile,
@@ -553,8 +571,8 @@ auto main(int argc, char **argv) -> int
             }
 
     if (trace_expiry) {
+        std::filesystem::create_directories("traces/expiry/");
         for (auto &cfg : configs) {
-            std::filesystem::create_directories("traces/expiry/");
             auto trace_outpath =
                 fmt::format("traces/expiry/{}.csv", cfg.infile_base());
             auto f = fopen(trace_outpath.c_str(), "w");

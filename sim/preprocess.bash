@@ -24,6 +24,7 @@ mkdir -p traces/sim
 # turn traces/fb23/*.csv.zst into traces/sim/fb23_*.csv
 for f in traces/fb23/*.csv.zst; do
     outf="traces/sim/$(basename "$f" .csv.zst | sed 's/^/fb23_/')".bin.zst
+    rm -f "$outf"
     tmpf=$(mktemp)
     echo "Processing $f -> $tmpf -> $outf"
     zstdcat "$f" | python sim/preprocess.py --format fb23 > $tmpf

@@ -31,10 +31,6 @@ target('sim')
     set_kind('binary')
     add_files('sim/sim.cpp')
 
-target('mltest')
-    set_kind('binary')
-    add_files('sim/mltest.cpp')
-
 target('oracle_backpass')
     set_kind('binary')
     add_files('sim/oracle_backpass.cpp')

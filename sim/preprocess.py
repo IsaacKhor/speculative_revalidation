@@ -124,7 +124,7 @@ def _parse_cf(parts: List[str]) -> tuple[int, int, int, int, int, int, int, bool
 def _parse_fb23(parts: List[str]) -> tuple[int, int, int, int, int, int, int, bool] | tuple[()]:
     if len(parts) < 15:
         raise ValueError(f'invalid FB23 row: {parts!r}')
-    ts = int(parts[0].strip()) & _MASK64
+    ts = (int(parts[0].strip()) & _MASK64) // 1000
     cache_key = parts[1].strip()
     digest = hashlib.sha256(cache_key.encode('utf-8')).digest()
     # Map long cache keys into the simulator's 64-bit key space.

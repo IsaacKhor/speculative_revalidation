@@ -46,12 +46,28 @@ inline auto tsince(std::chrono::time_point<std::chrono::steady_clock> &start)
         .count();
 }
 
+inline auto capadd(u32 x, u32 y) -> u32
+{
+    if (x >= UINT32_MAX - y)
+        return UINT32_MAX;
+    return x + y;
+}
+
+inline auto capmul(u32 x, u32 y) -> u32
+{
+    if (x == 0 || y == 0)
+        return 0;
+    if (x >= UINT32_MAX / y)
+        return UINT32_MAX;
+    return x * y;
+}
+
 enum class RevalidateMode {
     NEVER,
     ALWAYS,
     ORACLE,
     HEURISTICS,
-    ML, // TODO
+    ML,
 };
 
 constexpr auto rv_mode_str(RevalidateMode m) -> str
@@ -146,14 +162,9 @@ struct SimStats {
     u64 miss_expired = 0;
     u64 miss_evicted = 0;
 
-    // metric we want: origin amplification, both optimistic and pessimistic
-    // this means failed origin fetch / total origin fetch
-    // total_revals = hit_reval + reval_wasted + reval_pending
-    // total_fetches = all miss + total_revals
-    // TODO make a per-zone version
-    u64 fetches = 0; // excluding revalidations, misses only
-    u64 revals = 0;
-    u64 rv_wasted = 0;
+    u64 misses_all = 0; // all origin fetches, misses and revalidations
+    u64 rv_fetch = 0;   // revalidation fetches
+    u64 rv_wasted = 0;  // revalidiations that were wasted
 
     inline auto human_str() const -> str
     {
@@ -169,16 +180,16 @@ struct SimStats {
 
         auto good = hit_reval;
         auto bad = rv_wasted;
-        auto pending = revals - good - bad;
-        auto revals_pc = (double)revals / fetches;
-        auto good_pc = (double)good / fetches;
-        auto pending_pc = (double)pending / fetches;
-        auto wasted_pc = (double)rv_wasted / fetches;
+        auto pending = rv_fetch - good - bad;
+        auto revals_pc = (double)rv_fetch / misses_all;
+        auto good_pc = (double)good / misses_all;
+        auto pending_pc = (double)pending / misses_all;
+        auto wasted_pc = (double)rv_wasted / misses_all;
 
         auto amp_lower = (double)(bad) / (double)(all_miss);
         auto amp_upper = (double)(bad + pending) / (double)(all_miss);
 
-        auto revals_wasted_pc = (double)rv_wasted / (double)revals * 100.0;
+        auto revals_wasted_pc = (double)rv_wasted / (double)rv_fetch * 100.0;
 
         auto cachestr = fmt::format(
             R"(
@@ -204,8 +215,8 @@ Origin: {}/{}/{}/{}/{}
 Amp: {:.02f} - {:.02f}x
 % revals wasted: {:.02f}%
 )",
-            revals_pc, good_pc, pending_pc, wasted_pc, fetches, revals, good,
-            pending, bad, amp_lower, amp_upper, revals_wasted_pc);
+            revals_pc, good_pc, pending_pc, wasted_pc, misses_all, rv_fetch,
+            good, pending, bad, amp_lower, amp_upper, revals_wasted_pc);
 
         return cachestr + originstr;
     }
@@ -214,7 +225,7 @@ Amp: {:.02f} - {:.02f}x
     {
         return fmt::format("{},{},{},{},{},{},{},{},{},{}", all, hit_fresh,
                            hit_reval, hit_stale, miss_mandatory, miss_expired,
-                           miss_evicted, fetches, revals, rv_wasted);
+                           miss_evicted, misses_all, rv_fetch, rv_wasted);
     }
 
     inline static auto csv_hdr() -> str
