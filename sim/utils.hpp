@@ -70,6 +70,11 @@ enum class RevalidateMode {
     ML,
 };
 
+enum class CacheType {
+    LRU,
+    GDSF,
+};
+
 constexpr auto rv_mode_str(RevalidateMode m) -> str
 {
     switch (m) {
@@ -108,6 +113,7 @@ struct SimConfig {
     str infile;                 // must be zstd-compressed binary trace
     u64 capacity_gib = 2048;    // cache capacity; reduced by key_sample_ratio
     u64 key_sample_ratio = 1;   // only sample 1 in N keys
+    str cache_type = "lru";     // cache implementation to use
     FILE *trace_outf = nullptr; // expiry trace file output, null for none
     RevalidateMode rv_mode = RevalidateMode::NEVER;
 
@@ -133,23 +139,26 @@ struct SimConfig {
     inline auto repr() const -> str
     {
         return fmt::format(
-            "SimConfig(in={}, cache_gib={}, ksr={}, mode={}, model={}, "
+            "SimConfig(in={}, cache_gib={}, ksr={}, cache_type={}, mode={}, "
+            "model={}, "
             "mlthres={}, rv_min_ttl={}, rv_min_freq={}, rv_max_za={})",
-            infile, capacity_gib, key_sample_ratio, rv_mode_str(rv_mode),
-            model_path, conf_thres, rv_min_ttl, rv_min_freq, rv_max_zone_amp);
+            infile, capacity_gib, key_sample_ratio, cache_type,
+            rv_mode_str(rv_mode), model_path, conf_thres, rv_min_ttl,
+            rv_min_freq, rv_max_zone_amp);
     }
 
     inline static auto csv_hdr() -> str
     {
-        return "in,gib,ksr,mode,model,mlthres,rv_min_ttl,rv_min_freq,rv_max_za";
+        return "in,gib,ksr,cache_type,mode,model,mlthres,rv_min_ttl,rv_min_"
+               "freq,rv_max_za";
     }
 
     inline auto csv() const -> str
     {
-        return fmt::format("{},{},{},{},{},{},{},{},{}", infile_base(),
-                           capacity_gib, key_sample_ratio, rv_mode_str(rv_mode),
-                           model_path, conf_thres, rv_min_ttl, rv_min_freq,
-                           rv_max_zone_amp);
+        return fmt::format("{},{},{},{},{},{},{},{},{},{}", infile_base(),
+                           capacity_gib, key_sample_ratio, cache_type,
+                           rv_mode_str(rv_mode), model_path, conf_thres,
+                           rv_min_ttl, rv_min_freq, rv_max_zone_amp);
     }
 };
 

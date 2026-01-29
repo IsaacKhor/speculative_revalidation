@@ -30,6 +30,7 @@ end
 target('sim')
     set_kind('binary')
     add_files('sim/sim.cpp')
+    add_files('sim/eviction.cpp')
 
 target('oracle_backpass')
     set_kind('binary')
