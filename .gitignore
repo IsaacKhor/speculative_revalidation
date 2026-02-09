@@ -10,3 +10,5 @@ traces/
 !traces/preprocess*
 
 fetch.py
+
+results/zonestats/

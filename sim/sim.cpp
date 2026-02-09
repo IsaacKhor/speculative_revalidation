@@ -8,12 +8,14 @@
 #include <cassert>
 #include <csignal>
 #include <cstdio>
+#include <filesystem>
 #include <fmt/core.h>
 #include <fmt/os.h>
 #include <fmt/ranges.h>
 #include <iostream>
-#include <list>
+#include <limits>
 #include <thread>
+#include <unordered_map>
 #include <vector>
 #include <zstd.h>
 
@@ -21,6 +23,31 @@ const u64 MAX_EXPIRY_TIME = 30 * 24 * 60 * 60; // 30 days
 const bool ENABLE_FORCE_TTL = false;
 const u64 FORCE_TTL = 86400 * 2;
 namespace po = boost::program_options;
+
+enum class StatsMode {
+    Full,
+    WarmupSkip,
+    CooldownSkip,
+};
+
+static constexpr f64 WARMUP_PCT = 0.10;
+static constexpr f64 COOLDOWN_PCT = 0.33;
+
+static auto trace_uncompressed_reqs(strv base) -> u64
+{
+    static const std::unordered_map<str, u64> sizes_m = {
+        {"cf_a", 612}, {"cf_b", 738}, {"cf_c", 585}, {"cf_d", 633},
+        {"cf_e", 351}, {"cf_f", 390}, {"cf_g", 305}, {"cf_h", 322},
+        {"fb_a", 50},  {"fb_b", 103}, {"fb_c", 96},  {"wm_t", 198},
+        {"wm_u", 2656},
+    };
+
+    auto key = boost::algorithm::to_lower_copy(str(base));
+    auto it = sizes_m.find(key);
+    if (it == sizes_m.end())
+        FAIL("unknown trace base for size lookup: " + str(base));
+    return it->second * 1'000'000ULL;
+}
 
 class TraceReader
 {
@@ -137,6 +164,11 @@ class CacheSimulator
     SimStats stats;
     FILE *trace_outf;
     std::optional<RevalPredictor> ml_predictor = std::nullopt;
+    StatsMode stats_mode = StatsMode::Full;
+    u64 warmup_end_idx = 0;
+    u64 cooldown_start_idx = std::numeric_limits<u64>::max();
+
+    static constexpr u64 ZONESTATS_MIN_REQUESTS = 3000;
 
   public:
     CacheSimulator(SimConfig cfg) : cfg(cfg), trace_outf(cfg.trace_outf)
@@ -153,13 +185,72 @@ class CacheSimulator
             ml_predictor.emplace(cfg.model_path);
     }
 
+    auto should_record_stats() const -> bool
+    {
+        return stats_mode == StatsMode::Full;
+    }
+
+    auto should_record_reval_outcomes() const -> bool
+    {
+        return stats_mode != StatsMode::WarmupSkip;
+    }
+
+    auto record_rv_wasted(CacheEntry &entry) -> void
+    {
+        if (!should_record_reval_outcomes())
+            return;
+        stats.rv_wasted++;
+        entry.zs->rv_wasted++;
+    }
+
+    auto record_rv_good(CacheEntry &entry) -> void
+    {
+        if (!should_record_reval_outcomes())
+            return;
+        stats.hit_reval++;
+        entry.zs->rv_good++;
+    }
+
+    auto record_rv_fetch(CacheEntry &entry) -> void
+    {
+        if (!should_record_stats())
+            return;
+        stats.rv_fetch++;
+        entry.zs->rv_fetch++;
+    }
+
+    auto init_stats_windows() -> void
+    {
+        auto total_requests = trace_uncompressed_reqs(cfg.infile_base());
+
+        warmup_end_idx = static_cast<u64>(total_requests * WARMUP_PCT);
+        auto cooldown_count =
+            static_cast<u64>(total_requests * COOLDOWN_PCT);
+        if (cooldown_count == 0)
+            cooldown_start_idx = std::numeric_limits<u64>::max();
+        else
+            cooldown_start_idx = total_requests - cooldown_count;
+
+        if (warmup_end_idx > cooldown_start_idx)
+            warmup_end_idx = cooldown_start_idx;
+    }
+
+    auto set_stats_mode_for_index(u64 idx) -> void
+    {
+        if (idx < warmup_end_idx)
+            stats_mode = StatsMode::WarmupSkip;
+        else if (idx >= cooldown_start_idx)
+            stats_mode = StatsMode::CooldownSkip;
+        else
+            stats_mode = StatsMode::Full;
+    }
+
     auto on_cache_exit(CacheEntry &entry) -> void
     {
         // check if it was a wasted revalidation
         if (entry.entry_create_ts < entry.last_update_ts &&
             entry.accesses_since_update == 0) {
-            stats.rv_wasted++;
-            entry.zs->rv_wasted++;
+            record_rv_wasted(entry);
         }
 
         auto key = entry.key;
@@ -171,12 +262,10 @@ class CacheSimulator
         // check if it was a wasted revalidation
         if (entry.entry_create_ts < entry.last_update_ts &&
             entry.accesses_since_update == 0) {
-            stats.rv_wasted++;
-            entry.zs->rv_wasted++;
+            record_rv_wasted(entry);
         }
 
-        stats.rv_fetch++;
-        entry.zs->rv_fetch++;
+        record_rv_fetch(entry);
         entry.last_update_ts = now_ts;
         entry.accesses_since_update = 0;
 
@@ -190,8 +279,12 @@ class CacheSimulator
     auto run_sim(TraceReader &reader, bool print_progress) -> SimStats
     {
         Req req;
+        init_stats_windows();
+        u64 req_idx = 0;
 
         while (reader.get(req)) {
+            set_stats_mode_for_index(req_idx++);
+
             // skip too large objects
             if (req.size > 5ull * 1024 * 1024 * 1024) // 5 gib
                 continue;
@@ -227,10 +320,16 @@ class CacheSimulator
                    entry.content_type, entry.size);
     }
 
+    auto expire_rm(u64 key)
+    {
+        if (cfg.evict_expired)
+            cache->remove(key);
+    }
+
     auto on_expire(CacheEntry &entry, u32 now_ts)
     {
         if (cfg.rv_mode == RevalidateMode::NEVER) {
-            cache->remove(entry.key);
+            expire_rm(entry.key);
             return;
         }
 
@@ -250,7 +349,7 @@ class CacheSimulator
                 entry.next_access_ts <= capadd(now_ts, allowable_delay))
                 reval(entry, now_ts);
             else
-                cache->remove(entry.key);
+                expire_rm(entry.key);
             return;
         }
 
@@ -263,7 +362,7 @@ class CacheSimulator
             if (should_revalidate)
                 reval(entry, now_ts);
             else
-                cache->remove(entry.key);
+                expire_rm(entry.key);
 
             return;
         }
@@ -274,7 +373,7 @@ class CacheSimulator
             if (confidence > cfg.conf_thres)
                 reval(entry, now_ts);
             else
-                cache->remove(entry.key);
+                expire_rm(entry.key);
             return;
         }
 
@@ -283,7 +382,8 @@ class CacheSimulator
 
     auto sim_request(Req req) -> void
     {
-        stats.all++;
+        if (should_record_stats())
+            stats.all++;
         auto ts = req.ts;
 
         if (ENABLE_FORCE_TTL)
@@ -317,10 +417,12 @@ class CacheSimulator
             auto *zs = &zone_stats[req.zone];
 
             // check miss type, is it mandatory or not
-            if (seen_keys.find(req.key) == seen_keys.end())
-                stats.miss_mandatory++;
-            else
-                stats.miss_evicted++;
+            if (should_record_stats()) {
+                if (seen_keys.find(req.key) == seen_keys.end())
+                    stats.miss_mandatory++;
+                else
+                    stats.miss_evicted++;
+            }
 
             // insert into cache
             CacheEntry new_entry{
@@ -339,8 +441,10 @@ class CacheSimulator
             cache->admit(req.key, new_entry);
             expiry_heap.push(ExpiryHeapEntry{req.key, capadd(ts, req.ttl)});
 
-            stats.misses_all++;
-            zs->misses++;
+            if (should_record_stats()) {
+                stats.misses_all++;
+                zs->misses++;
+            }
 
             return;
         }
@@ -360,24 +464,57 @@ class CacheSimulator
         // reval: fresh, but # of accesses since last update = 0
         // stale: ttl < age <= ttl + ttstale
         if (cache_age <= entry.ttl && entry.accesses_since_update > 0) {
-            stats.hit_fresh++;
+            if (should_record_stats())
+                stats.hit_fresh++;
         } else if (cache_age <= entry.ttl && entry.accesses_since_update == 0) {
-            stats.hit_reval++;
-            entry.zs->rv_good++;
+            record_rv_good(entry);
         } else if (cache_age <= entry.ttl + entry.ttstale) {
-            stats.hit_stale++;
+            if (should_record_stats())
+                stats.hit_stale++;
         } else {
-            stats.miss_expired++;
+            if (should_record_stats())
+                stats.miss_expired++;
+
+            // revalidate, skip the rest of the hit path
+            if (should_record_stats())
+                entry.zs->misses++;
+            entry.last_access_ts = ts;
+            entry.last_update_ts = ts;
+            entry.accesses_since_update = 1;
+            entry.next_access_ts = req.next_req_ts;
+
+            cache->touch(req.key);
+            expiry_heap.push(ExpiryHeapEntry{entry.key, capadd(ts, entry.ttl)});
         }
 
         // update entry metadata
-        entry.zs->hits++;
+        if (should_record_stats())
+            entry.zs->hits++;
         entry.last_access_ts = ts;
         entry.accesses_since_update++;
         entry.next_access_ts = req.next_req_ts;
 
         // update cache state for lru/gdsf/sieve
         cache->touch(req.key);
+    }
+
+    auto dump_zonestats() -> void
+    {
+        if (cfg.zonestats_outf == nullptr)
+            return;
+
+        fmt::print(cfg.zonestats_outf, "{}\n", cfg.csv());
+        fmt::print(cfg.zonestats_outf, "{}\n", ZoneStats::csv_hdr());
+
+        for (const auto &kv : zone_stats) {
+            auto zone = kv.first;
+            const auto &zs = kv.second;
+            if (zs.total_requests() < ZONESTATS_MIN_REQUESTS)
+                continue;
+            fmt::print(cfg.zonestats_outf, "{}\n", zs.csv(zone));
+        }
+
+        fflush(cfg.zonestats_outf);
     }
 };
 
@@ -392,10 +529,12 @@ auto main(int argc, char **argv) -> int
     ("capacity,c", po::value<u64>()->default_value(2048), "cache capacity in GiB")
     ("parallel,p", po::value<u32>()->default_value(1), "number of parallel simulations to run")
     ("cache-type,y", po::value<vec<str>>(), "cache type (lru, gdsf)")
-    ("trace-expiry,e", po::value<bool>()->default_value(false), "output a trace of expiry events (for ml training, writes to traces/expiry/)")
     ("input-file,i", po::value<vec<str>>(), "input trace file (zstd compressed)")
     ("key-sample-ratio,s", po::value<vec<u64>>(), "key sampling ratio (list)")
     ("rv-mode,m", po::value<vec<str>>(), "revalidation mode (never, always, oracle, heuristics, ml)")
+    ("evict-expired", po::value<bool>()->default_value(true), "evict expired entries from cache")
+    ("trace-expiry,e", po::value<bool>()->default_value(false), "output a trace of expiry events (for ml training, writes to traces/expiry/)")
+    ("dump-zonestats", po::value<bool>()->default_value(false), "dump zone statistics at end of simulation")
 
     // heuristics params
     ("rv-min-ttl", po::value<vec<u64>>()->default_value({}, ""), "min ttl to revalidate (list)")
@@ -443,13 +582,15 @@ auto main(int argc, char **argv) -> int
     auto rv_max_za = vm["rv-max-za"].as<vec<f32>>();
     auto model_path = vm["ml-model-path"].as<vec<str>>();
     auto conf_thres = vm["ml-conf-thres"].as<vec<f32>>();
-
+    auto dump_zonestats = vm["dump-zonestats"].as<bool>();
     for (auto infile : input_files)
         if (!std::filesystem::exists(infile))
             FAIL("input file does not exist: " + infile);
     for (auto mpath : model_path)
         if (!std::filesystem::exists(mpath))
             FAIL("model path does not exist: " + mpath);
+
+    auto evict_expired = vm["evict-expired"].as<bool>();
 
     for (auto infile : input_files)
         for (auto ct : cache_types)
@@ -472,6 +613,7 @@ auto main(int argc, char **argv) -> int
                                     .rv_mode = rv_mode,
                                     .model_path = mpath,
                                     .conf_thres = thres,
+                                    .evict_expired = evict_expired,
                                 });
                     } else if (rv_mode == RevalidateMode::HEURISTICS) {
                         for (auto rvt : rv_min_ttl)
@@ -486,6 +628,7 @@ auto main(int argc, char **argv) -> int
                                         .rv_min_ttl = rvt,
                                         .rv_min_freq = rvf,
                                         .rv_max_zone_amp = rvza,
+                                        .evict_expired = evict_expired,
                                     });
                     } else if (rv_mode == RevalidateMode::ORACLE) {
                         for (auto thres : conf_thres)
@@ -496,6 +639,7 @@ auto main(int argc, char **argv) -> int
                                 .cache_type = ct,
                                 .rv_mode = rv_mode,
                                 .conf_thres = thres,
+                                .evict_expired = evict_expired,
                             });
                     } else {
                         configs.push_back(SimConfig{
@@ -504,6 +648,7 @@ auto main(int argc, char **argv) -> int
                             .key_sample_ratio = ksr,
                             .cache_type = ct,
                             .rv_mode = rv_mode,
+                            .evict_expired = evict_expired,
                         });
                     }
                 }
@@ -518,6 +663,18 @@ auto main(int argc, char **argv) -> int
         }
     }
 
+    if (dump_zonestats) {
+        std::filesystem::create_directories("results/zonestats/");
+        auto i = 0;
+        for (auto &cfg : configs) {
+            auto outpath =
+                fmt::format("results/zonestats/{}_{}_{}_zonestats.csv", i++,
+                            cfg.infile_base(), cfg.conf_thres);
+            auto f = fopen(outpath.c_str(), "w");
+            cfg.zonestats_outf = f;
+        }
+    }
+
     fmt::print("CSV output file: {}\n", csvout_file);
     auto outf = fmt::output_file(csvout_file);
     outf.print("{},{}\n", SimConfig::csv_hdr(), SimStats::csv_hdr());
@@ -528,9 +685,10 @@ auto main(int argc, char **argv) -> int
 
     vec<std::jthread> threads;
     std::atomic<u32> cfg_idx{0};
+    std::mutex cout_mutex;
 
     for (auto i = 0; i < parallel; i++)
-        threads.push_back(std::jthread([&cfg_idx, &configs, &outf]() {
+        threads.push_back(std::jthread([&cfg_idx, &configs, &outf, &cout_mutex]() {
             int j;
             while ((j = cfg_idx.fetch_add(1)) < configs.size()) {
                 auto &cfg = configs[j];
@@ -547,12 +705,17 @@ auto main(int argc, char **argv) -> int
 
                 auto mrps =
                     (double)stats.all / (double)total_time / 1'000'000.0;
-                fmt::print("Results #{} (took {}s, {:.2f} Mreq/s)\n{}:\n{}",
+                fmt::print("Results #{} (took {}s, {:.2f} Mreq/s)\n\t{}:\n\t{}",
                            j + 1, total_time, mrps, cfg.repr(),
                            stats.human_str());
-                outf.print("{},{}\n", cfg.csv(), stats.csv());
-                outf.flush();
+                
+                {
+                    std::lock_guard<std::mutex> lock(cout_mutex);
+                    outf.print("{},{}\n", cfg.csv(), stats.csv());
+                    outf.flush();
+                }
 
+                sim.dump_zonestats();
                 zstdcat.terminate();
                 zstdcat.wait();
             }

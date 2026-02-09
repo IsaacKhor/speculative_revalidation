@@ -11,6 +11,19 @@ struct ZoneStats {
     u64 rv_fetch = 0;  // revalidations only
     u64 rv_wasted = 0; // revalidations that were confirmed wasted
     u64 rv_good = 0;   // revalidations that were confirmed useful
+
+    inline auto total_requests() const -> u64 { return hits + misses; }
+
+    inline auto csv(u64 zone) const -> str
+    {
+        return fmt::format("{},{},{},{},{},{},{}", zone, total_requests(), hits,
+                           misses, rv_fetch, rv_good, rv_wasted);
+    }
+
+    inline static auto csv_hdr() -> str
+    {
+        return "zone,requests,hits,misses,rv_fetch,rv_good,rv_wasted";
+    }
 };
 
 struct CacheEntry {
@@ -30,8 +43,8 @@ struct CacheEntry {
     f64 priority = 0;  // for gdsf
 };
 
-// using cachemap_t = absl::node_hash_map<u64, CacheEntry>;
-using cachemap_t = std::map<u64, CacheEntry>;
+using cachemap_t = absl::node_hash_map<u64, CacheEntry>;
+// using cachemap_t = std::map<u64, CacheEntry>;
 using exit_cb = std::function<void(CacheEntry &)>;
 
 class Cache

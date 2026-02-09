@@ -11,6 +11,11 @@ mkdir -p traces/sim
 # xmake r oracle_backpass /tmp/trace.bin
 # zstd --rm -o traces/sim/wm_t.bin.zst /tmp/trace.bin
 
+# turn traces/wm/u-all.csv.zst into traces/sim/wm_u.bin.zst
+zstdcat traces/wm/u-all.csv.zst | python sim/preprocess.py --format wm > /tmp/trace.bin
+xmake r oracle_backpass /tmp/trace.bin
+zstd --rm -o traces/sim/wm_u.bin.zst /tmp/trace.bin
+
 # turn traces/cf/csv/*.csv.zst into traces/sim/cf_*.csv
 # for f in traces/cf/csv/*.csv.zst; do
 #     outf="traces/sim/$(basename "$f" .csv.zst | sed 's/^/cf_/')".bin.zst

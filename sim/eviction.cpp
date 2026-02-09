@@ -1,4 +1,5 @@
 #include "eviction.hpp"
+#include "absl/container/btree_set.h"
 
 class Lru : public Cache
 {
@@ -126,6 +127,9 @@ class Sieve : public Cache
             return;
 
         auto &[k, entry] = *it;
+        auto pos = entry.list_pos;
+        if (hand == pos)
+            hand++;
         queue.erase(entry.list_pos);
         erase(it);
     }
@@ -293,7 +297,7 @@ class Gdsf : public Cache
     f64 prio_last_evict = 0;
 
     // use set for ordering and ability to find
-    std::set<CacheEntry *, decltype(&Gdsf::cmp_prio)> pq{Gdsf::cmp_prio};
+    absl::btree_set<CacheEntry *, decltype(&Gdsf::cmp_prio)> pq{Gdsf::cmp_prio};
 };
 
 class Arc : public Cache

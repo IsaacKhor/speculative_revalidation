@@ -126,6 +126,9 @@ struct SimConfig {
     u64 rv_min_freq = 0;
     f64 rv_max_zone_amp = 0; // not currently implemented
 
+    bool evict_expired = false;
+    FILE *zonestats_outf = nullptr;
+
     inline auto infile_base() const -> str
     {
         auto posl = infile.find_last_of('/');
@@ -141,24 +144,26 @@ struct SimConfig {
         return fmt::format(
             "SimConfig(in={}, cache_gib={}, ksr={}, cache_type={}, mode={}, "
             "model={}, "
-            "mlthres={}, rv_min_ttl={}, rv_min_freq={}, rv_max_za={})",
+            "mlthres={}, rv_min_ttl={}, rv_min_freq={}, rv_max_za={}, "
+            "evict_expired={})",
             infile, capacity_gib, key_sample_ratio, cache_type,
             rv_mode_str(rv_mode), model_path, conf_thres, rv_min_ttl,
-            rv_min_freq, rv_max_zone_amp);
+            rv_min_freq, rv_max_zone_amp, evict_expired);
     }
 
     inline static auto csv_hdr() -> str
     {
-        return "in,gib,ksr,cache_type,mode,model,mlthres,rv_min_ttl,rv_min_"
-               "freq,rv_max_za";
+         return "in,gib,ksr,cache_type,mode,model,mlthres,rv_min_ttl,rv_min_"
+             "freq,rv_max_za,evict_expired";
     }
 
     inline auto csv() const -> str
     {
-        return fmt::format("{},{},{},{},{},{},{},{},{},{}", infile_base(),
+        return fmt::format("{},{},{},{},{},{},{},{},{},{},{}", infile_base(),
                            capacity_gib, key_sample_ratio, cache_type,
                            rv_mode_str(rv_mode), model_path, conf_thres,
-                           rv_min_ttl, rv_min_freq, rv_max_zone_amp);
+                           rv_min_ttl, rv_min_freq, rv_max_zone_amp,
+                           evict_expired);
     }
 };
 
@@ -227,7 +232,10 @@ Amp: {:.02f} - {:.02f}x
             revals_pc, good_pc, pending_pc, wasted_pc, misses_all, rv_fetch,
             good, pending, bad, amp_lower, amp_upper, revals_wasted_pc);
 
-        return cachestr + originstr;
+        // return cachestr + originstr;
+        return fmt::format(
+            "Amp: {:.02f} - {:.02f}x, % revals wasted: {:.02f}%\n", amp_lower,
+            amp_upper, revals_wasted_pc);
     }
 
     inline auto csv() const -> str

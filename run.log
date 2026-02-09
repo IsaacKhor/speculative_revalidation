@@ -1,0 +1,41 @@
++ source .venv/bin/activate
+++ '[' -z '' ']'
+++ '[' -n x ']'
+++ SCRIPT_PATH=.venv/bin/activate
+++ '[' .venv/bin/activate = run_sim.bash ']'
+++ deactivate nondestructive
+++ unset -f pydoc
+++ '[' -z '' ']'
+++ '[' -z '' ']'
+++ hash -r
+++ '[' -z '' ']'
+++ unset VIRTUAL_ENV
+++ unset VIRTUAL_ENV_PROMPT
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/home/isaackhor/code/cfcache/.venv
+++ '[' linux-gnu = cygwin ']'
+++ '[' linux-gnu = msys ']'
+++ export VIRTUAL_ENV
+++ '[' -z '' ']'
+++ unset SCRIPT_PATH
+++ _OLD_VIRTUAL_PATH=/home/isaackhor/.vcpkg:/home/isaackhor/.atuin/bin:/home/isaackhor/.cargo/bin:/home/isaackhor/bin:/Users/ikhor/bin:/Users/user/bin:/home/isaackhor/.local/bin:/home/isaackhor/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+++ PATH=/home/isaackhor/code/cfcache/.venv/bin:/home/isaackhor/.vcpkg:/home/isaackhor/.atuin/bin:/home/isaackhor/.cargo/bin:/home/isaackhor/bin:/Users/ikhor/bin:/Users/user/bin:/home/isaackhor/.local/bin:/home/isaackhor/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+++ export PATH
+++ '[' xcfcache '!=' x ']'
+++ VIRTUAL_ENV_PROMPT=cfcache
+++ export VIRTUAL_ENV_PROMPT
+++ '[' -z '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ PS1='(cfcache) '
+++ export PS1
+++ alias pydoc
+++ true
+++ hash -r
++ xmake
+[0m[38;5;2;1m[100%]:[0m [38;5;2;1mbuild ok, spent 0.014s[0m
++ iter=1
++ runnum=9
++ njobs=16
++ ksr=1
++ xmake r sim -s1 -p16 -c2048 -itraces/sim/cf_a.bin.zst -itraces/sim/cf_c.bin.zst -itraces/sim/cf_e.bin.zst -itraces/sim/cf_g.bin.zst --rv-mode=ml --cache-type=lru --dump-zonestats=true --ml-model-path=models/v9_cf_rfc.onnx --ml-conf-thres=0.55 --ml-conf-thres=0.6 --ml-conf-thres=0.65 --ml-conf-thres=0.7 --ml-conf-thres=0.75 --ml-conf-thres=0.8 --ml-conf-thres=0.85 --ml-conf-thres=0.9 --ml-conf-thres=0.95 --ml-conf-thres=1 --csvout=results/r9i1_cfzs.csv
