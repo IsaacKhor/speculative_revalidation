@@ -36,9 +36,9 @@ static constexpr f64 COOLDOWN_PCT = 0.33;
 static auto trace_uncompressed_reqs(strv base) -> u64
 {
     static const std::unordered_map<str, u64> sizes_m = {
-        {"cf_a", 612}, {"cf_b", 738}, {"cf_c", 585}, {"cf_d", 633},
-        {"cf_e", 351}, {"cf_f", 390}, {"cf_g", 305}, {"cf_h", 322},
-        {"fb_a", 50},  {"fb_b", 103}, {"fb_c", 96},  {"wm_t", 198},
+        {"cf_a", 612},  {"cf_b", 738}, {"cf_c", 585}, {"cf_d", 633},
+        {"cf_e", 351},  {"cf_f", 390}, {"cf_g", 305}, {"cf_h", 322},
+        {"fb_a", 50},   {"fb_b", 103}, {"fb_c", 96},  {"wm_t", 198},
         {"wm_u", 2656},
     };
 
@@ -192,7 +192,8 @@ class CacheSimulator
 
     auto should_record_reval_outcomes() const -> bool
     {
-        return stats_mode != StatsMode::WarmupSkip;
+        return stats_mode == StatsMode::Full;
+        // return stats_mode != StatsMode::WarmupSkip;
     }
 
     auto record_rv_wasted(CacheEntry &entry) -> void
@@ -224,8 +225,7 @@ class CacheSimulator
         auto total_requests = trace_uncompressed_reqs(cfg.infile_base());
 
         warmup_end_idx = static_cast<u64>(total_requests * WARMUP_PCT);
-        auto cooldown_count =
-            static_cast<u64>(total_requests * COOLDOWN_PCT);
+        auto cooldown_count = static_cast<u64>(total_requests * COOLDOWN_PCT);
         if (cooldown_count == 0)
             cooldown_start_idx = std::numeric_limits<u64>::max();
         else
@@ -233,6 +233,10 @@ class CacheSimulator
 
         if (warmup_end_idx > cooldown_start_idx)
             warmup_end_idx = cooldown_start_idx;
+
+        auto effective_requests = cooldown_start_idx - warmup_end_idx;
+        if (effective_requests < 1'000'000)
+            FAIL("effective request window < 1,000,000 after warmup/cooldown");
     }
 
     auto set_stats_mode_for_index(u64 idx) -> void
@@ -259,6 +263,21 @@ class CacheSimulator
 
     auto reval(CacheEntry &entry, u32 now_ts)
     {
+        if (cfg.rv_max_zone_amp > 0 &&
+            entry.zs->total_requests() > ZONESTATS_MIN_REQUESTS) {
+            double amp = 0;
+            if (entry.zs->misses > 0)
+                amp = (double)(entry.zs->rv_fetch - entry.zs->rv_good) /
+                      (double)(entry.zs->misses + entry.zs->rv_good);
+            else if (entry.zs->rv_wasted > 0)
+                amp = std::numeric_limits<double>::max();
+
+            if (amp > cfg.rv_max_zone_amp) {
+                expire_rm(entry.key);
+                return;
+            }
+        }
+
         // check if it was a wasted revalidation
         if (entry.entry_create_ts < entry.last_update_ts &&
             entry.accesses_since_update == 0) {
@@ -311,6 +330,8 @@ class CacheSimulator
     {
         if (trace_outf == nullptr)
             return;
+        if (stats_mode == StatsMode::CooldownSkip)
+            return;
 
         auto zs = *entry.zs;
         fmt::print(trace_outf, "{},{},{},{},{},{},{},{},{},{},{},{}\n", now_ts,
@@ -320,7 +341,7 @@ class CacheSimulator
                    entry.content_type, entry.size);
     }
 
-    auto expire_rm(u64 key)
+    auto expire_rm(u64 key) -> void
     {
         if (cfg.evict_expired)
             cache->remove(key);
@@ -530,7 +551,7 @@ auto main(int argc, char **argv) -> int
     ("parallel,p", po::value<u32>()->default_value(1), "number of parallel simulations to run")
     ("cache-type,y", po::value<vec<str>>(), "cache type (lru, gdsf)")
     ("input-file,i", po::value<vec<str>>(), "input trace file (zstd compressed)")
-    ("key-sample-ratio,s", po::value<vec<u64>>(), "key sampling ratio (list)")
+    ("key-sample-ratio,s", po::value<u64>()->default_value(1), "key sampling ratio")
     ("rv-mode,m", po::value<vec<str>>(), "revalidation mode (never, always, oracle, heuristics, ml)")
     ("evict-expired", po::value<bool>()->default_value(true), "evict expired entries from cache")
     ("trace-expiry,e", po::value<bool>()->default_value(false), "output a trace of expiry events (for ml training, writes to traces/expiry/)")
@@ -576,10 +597,12 @@ auto main(int argc, char **argv) -> int
         if (!validate_cache_type(ct))
             FAIL("unknown cache type: " + ct);
 
-    auto key_sample_ratio = vm["key-sample-ratio"].as<vec<u64>>();
+    auto key_sample_ratio = vm["key-sample-ratio"].as<u64>();
     auto rv_min_ttl = vm["rv-min-ttl"].as<vec<u64>>();
     auto rv_min_freq = vm["rv-min-freq"].as<vec<u64>>();
     auto rv_max_za = vm["rv-max-za"].as<vec<f32>>();
+    if(rv_max_za.empty())
+        rv_max_za.push_back(std::numeric_limits<f32>::max());
     auto model_path = vm["ml-model-path"].as<vec<str>>();
     auto conf_thres = vm["ml-conf-thres"].as<vec<f32>>();
     auto dump_zonestats = vm["dump-zonestats"].as<bool>();
@@ -594,64 +617,67 @@ auto main(int argc, char **argv) -> int
 
     for (auto infile : input_files)
         for (auto ct : cache_types)
-            for (auto ksr : key_sample_ratio)
-                for (auto mode : mode) {
-                    auto rv_mode = rv_mode_from_str(mode);
-                    if (rv_mode == RevalidateMode::ML) {
-                        if (model_path.empty())
-                            FAIL("must specify model-path for ML mode");
-                        if (conf_thres.empty())
-                            FAIL("must specify confidence thresholds for ML "
-                                 "mode");
-                        for (auto mpath : model_path)
-                            for (auto thres : conf_thres)
+            for (auto mode : mode) {
+                auto effective_ksr = key_sample_ratio;
+                if (infile.find("wm_u") != str::npos)
+                    effective_ksr *= 8;
+                auto rv_mode = rv_mode_from_str(mode);
+                if (rv_mode == RevalidateMode::ML) {
+                    if (model_path.empty())
+                        FAIL("must specify model-path for ML mode");
+                    if (conf_thres.empty())
+                        FAIL("must specify confidence thresholds for ML mode");
+                    for (auto mpath : model_path)
+                        for (auto thres : conf_thres)
+                            for (auto rvza : rv_max_za)
                                 configs.push_back(SimConfig{
                                     .infile = infile,
                                     .capacity_gib = capacity,
-                                    .key_sample_ratio = ksr,
+                                    .key_sample_ratio = effective_ksr,
                                     .cache_type = ct,
                                     .rv_mode = rv_mode,
                                     .model_path = mpath,
                                     .conf_thres = thres,
+                                    .rv_max_zone_amp = rvza,
                                     .evict_expired = evict_expired,
                                 });
-                    } else if (rv_mode == RevalidateMode::HEURISTICS) {
-                        for (auto rvt : rv_min_ttl)
-                            for (auto rvf : rv_min_freq)
-                                for (auto rvza : rv_max_za)
-                                    configs.push_back(SimConfig{
-                                        .infile = infile,
-                                        .capacity_gib = capacity,
-                                        .key_sample_ratio = ksr,
-                                        .cache_type = ct,
-                                        .rv_mode = rv_mode,
-                                        .rv_min_ttl = rvt,
-                                        .rv_min_freq = rvf,
-                                        .rv_max_zone_amp = rvza,
-                                        .evict_expired = evict_expired,
-                                    });
-                    } else if (rv_mode == RevalidateMode::ORACLE) {
-                        for (auto thres : conf_thres)
-                            configs.push_back(SimConfig{
-                                .infile = infile,
-                                .capacity_gib = capacity,
-                                .key_sample_ratio = ksr,
-                                .cache_type = ct,
-                                .rv_mode = rv_mode,
-                                .conf_thres = thres,
-                                .evict_expired = evict_expired,
-                            });
-                    } else {
+                } else if (rv_mode == RevalidateMode::HEURISTICS) {
+                    for (auto rvt : rv_min_ttl)
+                        for (auto rvf : rv_min_freq)
+                            for (auto rvza : rv_max_za)
+                                configs.push_back(SimConfig{
+                                    .infile = infile,
+                                    .capacity_gib = capacity,
+                                    .key_sample_ratio = effective_ksr,
+                                    .cache_type = ct,
+                                    .rv_mode = rv_mode,
+                                    .rv_min_ttl = rvt,
+                                    .rv_min_freq = rvf,
+                                    .rv_max_zone_amp = rvza,
+                                    .evict_expired = evict_expired,
+                                });
+                } else if (rv_mode == RevalidateMode::ORACLE) {
+                    for (auto thres : conf_thres)
                         configs.push_back(SimConfig{
                             .infile = infile,
                             .capacity_gib = capacity,
-                            .key_sample_ratio = ksr,
+                            .key_sample_ratio = effective_ksr,
                             .cache_type = ct,
                             .rv_mode = rv_mode,
+                            .conf_thres = thres,
                             .evict_expired = evict_expired,
                         });
-                    }
+                } else {
+                    configs.push_back(SimConfig{
+                        .infile = infile,
+                        .capacity_gib = capacity,
+                        .key_sample_ratio = effective_ksr,
+                        .cache_type = ct,
+                        .rv_mode = rv_mode,
+                        .evict_expired = evict_expired,
+                    });
                 }
+            }
 
     if (trace_expiry) {
         std::filesystem::create_directories("traces/expiry/");
@@ -688,7 +714,8 @@ auto main(int argc, char **argv) -> int
     std::mutex cout_mutex;
 
     for (auto i = 0; i < parallel; i++)
-        threads.push_back(std::jthread([&cfg_idx, &configs, &outf, &cout_mutex]() {
+        threads.push_back(std::jthread([&cfg_idx, &configs, &outf,
+                                        &cout_mutex]() {
             int j;
             while ((j = cfg_idx.fetch_add(1)) < configs.size()) {
                 auto &cfg = configs[j];
@@ -708,7 +735,7 @@ auto main(int argc, char **argv) -> int
                 fmt::print("Results #{} (took {}s, {:.2f} Mreq/s)\n\t{}:\n\t{}",
                            j + 1, total_time, mrps, cfg.repr(),
                            stats.human_str());
-                
+
                 {
                     std::lock_guard<std::mutex> lock(cout_mutex);
                     outf.print("{},{}\n", cfg.csv(), stats.csv());

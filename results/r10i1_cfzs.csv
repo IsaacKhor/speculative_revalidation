@@ -1,0 +1,1 @@
+in,gib,ksr,cache_type,mode,model,mlthres,rv_min_ttl,rv_min_freq,rv_max_za,evict_expired,all,hit_fresh,hit_reval,hit_stale,miss_mandatory,miss_expired,miss_evicted,fetches,revals,reval_wasted

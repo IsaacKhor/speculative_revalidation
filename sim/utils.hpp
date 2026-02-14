@@ -124,7 +124,7 @@ struct SimConfig {
     // heuristics params
     u64 rv_min_ttl = 0;
     u64 rv_min_freq = 0;
-    f64 rv_max_zone_amp = 0; // not currently implemented
+    f64 rv_max_zone_amp = 0;
 
     bool evict_expired = false;
     FILE *zonestats_outf = nullptr;

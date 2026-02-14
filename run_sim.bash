@@ -68,30 +68,42 @@ ksr=1
 #     --ml-conf-thres={1,2,3,4} \
 #     --csvout=results/r${runnum}i${iter}_oracle.csv
 
-# ml models, cf
-xmake r sim -s$ksr -p$njobs -c2048 \
+# # ml models, cf
+# xmake r sim -s$ksr -p$njobs -c2048 \
+#     -itraces/sim/cf_{a..h}.bin.zst \
+#     --rv-mode=ml \
+#     --cache-type={lru,gdsf,sieve,arc,fifo} \
+#     --ml-model-path=models/v${runnum}_cf_rfc.onnx \
+#     --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68,0.66} \
+#     --csvout=results/r${runnum}i${iter}_ml_cf_rfc.csv
+
+# # ml models, fb
+# xmake r sim -s$ksr -p$njobs -c2048 \
+#     -itraces/sim/fb_{a..c}.bin.zst \
+#     --rv-mode=ml \
+#     --cache-type={lru,gdsf,sieve,arc,fifo} \
+#     --ml-model-path=models/v${runnum}_fb_rfc.onnx \
+#     --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68,0.66} \
+#     --csvout=results/r${runnum}i${iter}_ml_fb_rfc.csv
+
+# # ml models, wm
+# xmake r sim -s$ksr -p$njobs -c2048 \
+#     -itraces/sim/wm_t.bin.zst \
+#     -itraces/sim/wm_u.bin.zst \
+#     --rv-mode=ml \
+#     --cache-type={lru,gdsf,sieve,arc,fifo} \
+#     --ml-model-path=models/v${runnum}_wm_rfc.onnx \
+#     --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68,0.66} \
+#     --csvout=results/r${runnum}i${iter}_ml_wm_rfc.csv
+
+# vary za
+xmake r sim -s2 -p$njobs -c2048 \
     -itraces/sim/cf_{a..h}.bin.zst \
     --rv-mode=ml \
-    --cache-type={lru,gdsf,sieve,arc,fifo} \
+    --cache-type=lru \
+    --dump-zonestats=true \
     --ml-model-path=models/v${runnum}_cf_rfc.onnx \
     --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68,0.66} \
-    --csvout=results/r${runnum}i${iter}_ml_cf_rfc.csv
+    --rv-ma-za={0.02,0.03,0.04,0.06,0.08,0.1,0.12,0.14,0.16} \
+    --csvout=results/r${runnum}i${iter}_ml_cf_rfc_varyza.csv
 
-# ml models, fb
-xmake r sim -s$ksr -p$njobs -c2048 \
-    -itraces/sim/fb_{a..c}.bin.zst \
-    --rv-mode=ml \
-    --cache-type={lru,gdsf,sieve,arc,fifo} \
-    --ml-model-path=models/v${runnum}_fb_rfc.onnx \
-    --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68,0.66} \
-    --csvout=results/r${runnum}i${iter}_ml_fb_rfc.csv
-
-# ml models, wm
-xmake r sim -s$ksr -p$njobs -c2048 \
-    -itraces/sim/wm_t.bin.zst \
-    -itraces/sim/wm_u.bin.zst \
-    --rv-mode=ml \
-    --cache-type={lru,gdsf,sieve,arc,fifo} \
-    --ml-model-path=models/v${runnum}_wm_rfc.onnx \
-    --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68,0.66} \
-    --csvout=results/r${runnum}i${iter}_ml_wm_rfc.csv

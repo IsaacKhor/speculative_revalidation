@@ -1,41 +1,1009 @@
-+ source .venv/bin/activate
-++ '[' -z '' ']'
-++ '[' -n x ']'
-++ SCRIPT_PATH=.venv/bin/activate
-++ '[' .venv/bin/activate = run_sim.bash ']'
-++ deactivate nondestructive
-++ unset -f pydoc
-++ '[' -z '' ']'
-++ '[' -z '' ']'
-++ hash -r
-++ '[' -z '' ']'
-++ unset VIRTUAL_ENV
-++ unset VIRTUAL_ENV_PROMPT
-++ '[' '!' nondestructive = nondestructive ']'
-++ VIRTUAL_ENV=/home/isaackhor/code/cfcache/.venv
-++ '[' linux-gnu = cygwin ']'
-++ '[' linux-gnu = msys ']'
-++ export VIRTUAL_ENV
-++ '[' -z '' ']'
-++ unset SCRIPT_PATH
-++ _OLD_VIRTUAL_PATH=/home/isaackhor/.vcpkg:/home/isaackhor/.atuin/bin:/home/isaackhor/.cargo/bin:/home/isaackhor/bin:/Users/ikhor/bin:/Users/user/bin:/home/isaackhor/.local/bin:/home/isaackhor/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-++ PATH=/home/isaackhor/code/cfcache/.venv/bin:/home/isaackhor/.vcpkg:/home/isaackhor/.atuin/bin:/home/isaackhor/.cargo/bin:/home/isaackhor/bin:/Users/ikhor/bin:/Users/user/bin:/home/isaackhor/.local/bin:/home/isaackhor/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-++ export PATH
-++ '[' xcfcache '!=' x ']'
-++ VIRTUAL_ENV_PROMPT=cfcache
-++ export VIRTUAL_ENV_PROMPT
-++ '[' -z '' ']'
-++ '[' -z '' ']'
-++ _OLD_VIRTUAL_PS1=
-++ PS1='(cfcache) '
-++ export PS1
-++ alias pydoc
-++ true
-++ hash -r
-+ xmake
-[0m[38;5;2;1m[100%]:[0m [38;5;2;1mbuild ok, spent 0.014s[0m
-+ iter=1
-+ runnum=9
-+ njobs=16
-+ ksr=1
-+ xmake r sim -s1 -p16 -c2048 -itraces/sim/cf_a.bin.zst -itraces/sim/cf_c.bin.zst -itraces/sim/cf_e.bin.zst -itraces/sim/cf_g.bin.zst --rv-mode=ml --cache-type=lru --dump-zonestats=true --ml-model-path=models/v9_cf_rfc.onnx --ml-conf-thres=0.55 --ml-conf-thres=0.6 --ml-conf-thres=0.65 --ml-conf-thres=0.7 --ml-conf-thres=0.75 --ml-conf-thres=0.8 --ml-conf-thres=0.85 --ml-conf-thres=0.9 --ml-conf-thres=0.95 --ml-conf-thres=1 --csvout=results/r9i1_cfzs.csv
+Running 252 simulations with parallelism 10
+Running config #1: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Running config #3: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Running config #2: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Running config #4: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Running config #5: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Running config #6: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Running config #7: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Running config #8: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Running config #9: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Running config #10: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #7 (took 450s, 0.41 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Results #6 (took 451s, 0.41 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Results #5 (took 451s, 0.41 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Results #4 (took 451s, 0.41 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #11: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Running config #12: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Running config #13: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Running config #14: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #10 (took 455s, 0.41 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 2.24%
+Results #9 (took 455s, 0.41 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 2.24%
+Results #8 (took 455s, 0.41 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 2.24%
+Running config #15: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Running config #16: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Running config #17: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #1 (took 464s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Results #2 (took 464s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Results #3 (took 464s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #18: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Running config #19: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Running config #20: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #11 (took 447s, 0.42 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 2.24%
+Running config #21: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #16 (took 458s, 0.41 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.65%
+Results #17 (took 458s, 0.41 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.66%
+Running config #22: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Running config #23: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #15 (took 465s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.62%
+Results #12 (took 470s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 2.24%
+Results #14 (took 470s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 2.24%
+Results #13 (took 470s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 2.24%
+Running config #24: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Running config #25: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Running config #26: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Running config #27: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #18 (took 459s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.66%
+Running config #28: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #19 (took 468s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.66%
+Results #20 (took 468s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.67%
+Running config #29: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Running config #30: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #21 (took 469s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.67%
+Running config #31: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #23 (took 470s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.90%
+Running config #32: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #22 (took 476s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.65%
+Running config #33: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #24 (took 472s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.98%
+Results #28 (took 469s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.99%
+Running config #34: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Running config #35: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #25 (took 480s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.99%
+Results #27 (took 480s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 9.00%
+Results #26 (took 480s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 9.00%
+Running config #36: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #29 (took 471s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 13.72%
+Running config #37: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Running config #38: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Running config #39: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #30 (took 476s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 13.98%
+Running config #40: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #31 (took 474s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.22%
+Running config #41: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #34 (took 465s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.38%
+Running config #42: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #33 (took 471s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.37%
+Running config #43: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #32 (took 482s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.32%
+Results #36 (took 466s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 18.86%
+Running config #44: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #35 (took 475s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.38%
+Running config #45: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Running config #46: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #39 (took 473s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 18.85%
+Running config #47: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #38 (took 481s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 18.55%
+Results #37 (took 482s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 18.26%
+Running config #48: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Running config #49: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #40 (took 477s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 18.97%
+Running config #50: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #43 (took 465s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 27.45%
+Running config #51: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #41 (took 499s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.05%
+Results #42 (took 483s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.06%
+Running config #52: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Running config #53: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #45 (took 474s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 25.69%
+Running config #54: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #44 (took 482s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 25.96%
+Running config #55: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #50 (took 466s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 30.40%
+Results #46 (took 484s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 25.75%
+Results #47 (took 477s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 26.01%
+Running config #56: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Running config #57: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Running config #58: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #49 (took 482s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 26.80%
+Results #48 (took 482s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 26.49%
+Running config #59: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Running config #60: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #51 (took 481s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 29.16%
+Running config #61: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #54 (took 478s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 28.77%
+Running config #62: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #53 (took 485s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 28.60%
+Results #57 (took 471s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.02 - 0.01x, % revals wasted: 34.82%
+Results #58 (took 471s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 34.39%
+Running config #63: SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Running config #64: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Running config #65: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #52 (took 492s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 28.66%
+Running config #66: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #55 (took 487s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 29.20%
+Running config #67: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #60 (took 480s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 35.31%
+Running config #68: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #59 (took 488s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 34.61%
+Running config #69: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #56 (took 511s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.04 - 0.03x, % revals wasted: 29.70%
+Running config #70: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #61 (took 483s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 36.09%
+Running config #71: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #62 (took 489s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.05 - 0.05x, % revals wasted: 37.28%
+Running config #72: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #63 (took 490s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_a.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.05 - 0.05x, % revals wasted: 38.49%
+Running config #73: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #64 (took 509s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Results #65 (took 509s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #74: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Running config #75: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #66 (took 520s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Results #67 (took 516s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #76: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Running config #77: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #68 (took 510s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #78: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #69 (took 513s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #79: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #70 (took 516s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #80: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #71 (took 514s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.11%
+Running config #81: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #73 (took 495s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.09%
+Results #72 (took 501s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.10%
+Running config #82: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Running config #83: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #75 (took 501s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.09%
+Results #74 (took 502s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.09%
+Running config #84: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Running config #85: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #76 (took 498s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.09%
+Running config #86: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #77 (took 502s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.09%
+Running config #87: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #78 (took 515s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.60%
+Running config #88: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #79 (took 512s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.88%
+Running config #89: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #80 (took 517s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.90%
+Running config #90: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #81 (took 502s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.92%
+Running config #91: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #82 (took 516s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.93%
+Results #83 (took 516s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.93%
+Running config #92: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Running config #93: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #84 (took 512s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.93%
+Running config #94: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #85 (took 515s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 11.46%
+Running config #95: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #87 (took 516s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 12.21%
+Running config #96: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #86 (took 527s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 12.05%
+Running config #97: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #89 (took 518s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 12.25%
+Results #88 (took 526s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 12.23%
+Running config #98: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Running config #99: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #90 (took 523s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 12.26%
+Running config #100: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #91 (took 544s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 12.27%
+Running config #101: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #92 (took 528s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.00x, % revals wasted: 15.97%
+Results #93 (took 528s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 16.87%
+Running config #102: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Running config #103: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #94 (took 523s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 17.16%
+Results #95 (took 519s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 17.25%
+Running config #104: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Running config #105: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #96 (took 523s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 17.34%
+Running config #106: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #97 (took 532s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 17.37%
+Running config #107: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #99 (took 521s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.42%
+Running config #108: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #98 (took 528s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 17.39%
+Running config #109: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #100 (took 527s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 20.32%
+Running config #110: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #101 (took 531s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 20.94%
+Running config #111: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #102 (took 530s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 21.39%
+Results #103 (took 530s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 21.41%
+Running config #112: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Running config #113: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #105 (took 531s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 21.54%
+Running config #114: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #106 (took 525s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 26.18%
+Results #104 (took 546s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 21.52%
+Running config #115: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Running config #116: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #109 (took 532s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 27.39%
+Results #108 (took 538s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 26.96%
+Running config #117: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Running config #118: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #107 (took 554s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 26.45%
+Running config #119: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #110 (took 534s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 27.78%
+Running config #120: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #113 (took 519s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 29.28%
+Running config #121: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #111 (took 539s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 28.22%
+Running config #122: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #114 (took 529s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 29.42%
+Running config #123: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #112 (took 558s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 28.44%
+Running config #124: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #115 (took 544s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 29.90%
+Results #116 (took 544s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 30.41%
+Running config #125: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Running config #126: SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #118 (took 543s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 31.51%
+Results #117 (took 545s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 30.83%
+Results #119 (took 541s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 32.09%
+Running config #127: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Running config #128: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Running config #129: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #120 (took 532s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 42.74%
+Running config #130: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #127 (took 267s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #131: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #128 (took 267s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Results #129 (took 267s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #132: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Running config #133: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #130 (took 265s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #134: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #121 (took 555s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 42.10%
+Running config #135: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #122 (took 551s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 42.72%
+Running config #136: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #124 (took 557s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 44.64%
+Running config #137: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #123 (took 574s, 0.31 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 43.69%
+Running config #138: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #125 (took 566s, 0.31 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.05 - 0.05x, % revals wasted: 46.15%
+Results #126 (took 565s, 0.31 Mreq/s)
+        SimConfig(in=traces/sim/cf_c.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.06 - 0.06x, % revals wasted: 47.83%
+Running config #139: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Running config #140: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #131 (took 264s, 0.40 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #141: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #133 (took 269s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #142: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #134 (took 268s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.54%
+Running config #143: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #132 (took 278s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #144: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #135 (took 278s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.61%
+Running config #145: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #136 (took 272s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.67%
+Running config #146: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #137 (took 274s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.72%
+Running config #147: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #138 (took 279s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.74%
+Running config #148: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #140 (took 270s, 0.39 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.74%
+Running config #149: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #139 (took 276s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.74%
+Running config #150: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #141 (took 279s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 4.58%
+Running config #151: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #142 (took 275s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 4.61%
+Running config #152: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #143 (took 277s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 4.63%
+Running config #153: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #144 (took 279s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 4.64%
+Running config #154: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #145 (took 278s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 4.66%
+Running config #155: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #146 (took 278s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 4.66%
+Running config #156: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #147 (took 278s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 4.66%
+Running config #157: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #148 (took 283s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 8.92%
+Running config #158: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #149 (took 278s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 9.02%
+Running config #159: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #151 (took 274s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 9.09%
+Running config #160: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #150 (took 287s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 9.07%
+Running config #161: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #152 (took 283s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 9.11%
+Running config #162: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #153 (took 279s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 9.12%
+Running config #163: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #154 (took 293s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 9.13%
+Running config #164: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #155 (took 280s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 13.94%
+Running config #165: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #156 (took 280s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 14.01%
+Running config #166: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #158 (took 273s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.17%
+Running config #167: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #157 (took 295s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.12%
+Running config #168: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #160 (took 279s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.24%
+Running config #169: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #162 (took 274s, 0.38 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.20%
+Results #159 (took 295s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.21%
+Running config #170: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Running config #171: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #161 (took 291s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 14.25%
+Running config #172: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #163 (took 285s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.10%
+Running config #173: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #164 (took 304s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.10%
+Running config #174: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #165 (took 286s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.13%
+Results #166 (took 284s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.15%
+Running config #175: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Running config #176: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #167 (took 285s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.18%
+Running config #177: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #168 (took 285s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 19.19%
+Running config #178: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #169 (took 286s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 25.66%
+Running config #179: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #171 (took 289s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 24.22%
+Running config #180: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #170 (took 296s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 24.65%
+Running config #181: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #172 (took 294s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 24.29%
+Running config #182: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #173 (took 288s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 24.55%
+Running config #183: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #174 (took 290s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 24.70%
+Running config #184: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #176 (took 282s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 29.15%
+Running config #185: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #175 (took 289s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 24.83%
+Running config #186: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #177 (took 296s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 27.84%
+Running config #187: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #178 (took 298s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 27.41%
+Running config #188: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #179 (took 296s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 27.20%
+Running config #189: SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #180 (took 292s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 27.38%
+Running config #190: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #181 (took 290s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 27.92%
+Running config #191: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #182 (took 294s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 28.13%
+Results #183 (took 294s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 35.93%
+Running config #192: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Running config #193: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #184 (took 301s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 37.17%
+Running config #194: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #185 (took 304s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.04 - 0.03x, % revals wasted: 38.75%
+Running config #195: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #186 (took 303s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 40.26%
+Running config #196: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #191 (took 256s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #197: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #190 (took 262s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #198: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #192 (took 252s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #199: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #193 (took 256s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #200: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #188 (took 300s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.06 - 0.06x, % revals wasted: 43.71%
+Running config #201: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #187 (took 308s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.05 - 0.05x, % revals wasted: 41.56%
+Running config #202: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #189 (took 301s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_e.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.07 - 0.07x, % revals wasted: 45.79%
+Running config #203: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #194 (took 255s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #204: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #195 (took 258s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #205: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #196 (took 261s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=1, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: -nan%
+Running config #206: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #197 (took 253s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.64%
+Running config #207: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #199 (took 256s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.63%
+Running config #208: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #198 (took 262s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.63%
+Running config #209: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #200 (took 254s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.63%
+Running config #210: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #201 (took 254s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.62%
+Running config #211: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #202 (took 257s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.62%
+Running config #212: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #203 (took 262s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.95, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 1.62%
+Running config #213: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #204 (took 261s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.29%
+Running config #214: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #205 (took 264s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.32%
+Running config #215: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #206 (took 261s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.32%
+Running config #216: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #207 (took 258s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.32%
+Running config #217: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #209 (took 256s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.32%
+Running config #218: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #208 (took 262s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.32%
+Running config #219: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #210 (took 269s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.9, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 3.32%
+Running config #220: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #212 (took 263s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.57%
+Running config #221: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #211 (took 272s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.47%
+Running config #222: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #213 (took 270s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.59%
+Running config #223: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #214 (took 274s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.60%
+Running config #224: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #215 (took 262s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.60%
+Running config #225: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #216 (took 263s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.60%
+Running config #226: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #217 (took 269s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.85, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.00 - 0.00x, % revals wasted: 7.60%
+Running config #227: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #218 (took 262s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 11.32%
+Running config #228: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #220 (took 268s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 11.83%
+Running config #229: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #219 (took 280s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 11.69%
+Running config #230: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #222 (took 268s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 11.92%
+Running config #231: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #221 (took 274s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 11.90%
+Running config #232: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #223 (took 278s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 11.92%
+Running config #233: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #224 (took 266s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.8, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 11.93%
+Running config #234: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #225 (took 271s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.01 - 0.01x, % revals wasted: 18.86%
+Running config #235: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #226 (took 273s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 18.61%
+Running config #236: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #227 (took 272s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 18.72%
+Running config #237: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #228 (took 275s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 18.76%
+Running config #238: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #229 (took 272s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 18.79%
+Running config #239: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #230 (took 276s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 18.81%
+Running config #240: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #231 (took 273s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.75, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 18.82%
+Running config #241: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #232 (took 273s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 23.85%
+Running config #242: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #233 (took 280s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 26.04%
+Running config #243: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #234 (took 276s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 25.35%
+Running config #244: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #235 (took 276s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 25.27%
+Running config #245: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #236 (took 284s, 0.31 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 25.41%
+Running config #246: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true)
+Results #237 (took 270s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 25.60%
+Running config #247: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true)
+Results #238 (took 286s, 0.31 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.7, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 25.67%
+Running config #248: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true)
+Results #239 (took 280s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.02 - 0.02x, % revals wasted: 26.12%
+Running config #249: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true)
+Results #241 (took 274s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 28.94%
+Running config #250: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true)
+Results #242 (took 276s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 28.69%
+Running config #251: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true)
+Results #240 (took 287s, 0.31 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 28.18%
+Running config #252: SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true)
+Results #243 (took 274s, 0.33 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.04 - 0.04x, % revals wasted: 28.70%
+Results #244 (took 281s, 0.32 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.05 - 0.05x, % revals wasted: 28.92%
+Results #245 (took 254s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.68, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.05 - 0.05x, % revals wasted: 29.11%
+Results #246 (took 259s, 0.34 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.019999999552965164, evict_expired=true):
+        Amp: 0.03 - 0.03x, % revals wasted: 38.79%
+Results #247 (took 258s, 0.35 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.03999999910593033, evict_expired=true):
+        Amp: 0.05 - 0.05x, % revals wasted: 38.15%
+Results #248 (took 248s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.05999999865889549, evict_expired=true):
+        Amp: 0.06 - 0.06x, % revals wasted: 39.27%
+Results #249 (took 242s, 0.37 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.07999999821186066, evict_expired=true):
+        Amp: 0.07 - 0.07x, % revals wasted: 40.86%
+Results #250 (took 250s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.10000000149011612, evict_expired=true):
+        Amp: 0.08 - 0.08x, % revals wasted: 42.60%
+Results #251 (took 245s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.12999999523162842, evict_expired=true):
+        Amp: 0.10 - 0.10x, % revals wasted: 45.13%
+Results #252 (took 245s, 0.36 Mreq/s)
+        SimConfig(in=traces/sim/cf_g.bin.zst, cache_gib=2048, ksr=2, cache_type=lru, mode=ml, model=models/v10_cf_rfc.onnx, mlthres=0.66, rv_min_ttl=0, rv_min_freq=0, rv_max_za=0.1599999964237213, evict_expired=true):
+        Amp: 0.11 - 0.11x, % revals wasted: 47.55%

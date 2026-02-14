@@ -35,3 +35,7 @@ target('sim')
 target('oracle_backpass')
     set_kind('binary')
     add_files('sim/oracle_backpass.cpp')
+
+target('modeltime')
+    set_kind('binary')
+    add_files('sim/modeltime.cpp')
