@@ -128,6 +128,7 @@ struct SimConfig {
 
     bool evict_expired = false;
     FILE *zonestats_outf = nullptr;
+    FILE *ts_outf = nullptr; // per-100k-request time series, null for none
 
     inline auto infile_base() const -> str
     {
@@ -249,5 +250,48 @@ Amp: {:.02f} - {:.02f}x
     {
         return "all,hit_fresh,hit_reval,hit_stale,miss_mandatory,miss_expired,"
                "miss_evicted,fetches,revals,reval_wasted";
+    }
+
+    // snapshot of cumulative counters at the last time-series emit; used to
+    // produce per-window deltas that effectively reset every TS_WINDOW requests
+    static constexpr u64 TS_WINDOW = 100'000;
+    u64 ts_last_all = 0;
+    u64 ts_last_hit_fresh = 0;
+    u64 ts_last_hit_reval = 0;
+    u64 ts_last_hit_stale = 0;
+    u64 ts_last_miss_mandatory = 0;
+    u64 ts_last_miss_expired = 0;
+    u64 ts_last_miss_evicted = 0;
+
+    inline static auto ts_csv_hdr() -> str
+    {
+        return "all,now_ts,hits,revals,stales,miss_mandatory,miss_expired,"
+               "miss_evicted";
+    }
+
+    // emit one time-series row if at least TS_WINDOW requests have elapsed
+    // since the last emit, then advance the snapshot. now_ts is the current
+    // simulation timestamp (trace wall-clock seconds).
+    inline auto emit_ts(FILE *outf, u32 now_ts) -> void
+    {
+        if (outf == nullptr)
+            return;
+        if (all - ts_last_all < TS_WINDOW)
+            return;
+        fmt::print(outf, "{},{},{},{},{},{},{},{}\n", all, now_ts,
+                   hit_fresh - ts_last_hit_fresh,
+                   hit_reval - ts_last_hit_reval,
+                   hit_stale - ts_last_hit_stale,
+                   miss_mandatory - ts_last_miss_mandatory,
+                   miss_expired - ts_last_miss_expired,
+                   miss_evicted - ts_last_miss_evicted);
+        ts_last_all = all;
+        ts_last_hit_fresh = hit_fresh;
+        ts_last_hit_reval = hit_reval;
+        ts_last_hit_stale = hit_stale;
+        ts_last_miss_mandatory = miss_mandatory;
+        ts_last_miss_expired = miss_expired;
+        ts_last_miss_evicted = miss_evicted;
+        fflush(outf);
     }
 };

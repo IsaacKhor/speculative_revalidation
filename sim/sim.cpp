@@ -317,6 +317,8 @@ class CacheSimulator
 
             sim_request(req);
 
+            stats.emit_ts(cfg.ts_outf, req.ts);
+
             if (print_progress && stats.all % 100'000 == 0)
                 fmt::print(stderr, ".");
             if (print_progress && stats.all % 5'000'000 == 0)
@@ -556,6 +558,7 @@ auto main(int argc, char **argv) -> int
     ("evict-expired", po::value<bool>()->default_value(true), "evict expired entries from cache")
     ("trace-expiry,e", po::value<bool>()->default_value(false), "output a trace of expiry events (for ml training, writes to traces/expiry/)")
     ("dump-zonestats", po::value<bool>()->default_value(false), "dump zone statistics at end of simulation")
+    ("dump-stats-ts", po::value<str>()->default_value(""), "output directory for per-100k-request cache stats time series (empty = disabled)")
 
     // heuristics params
     ("rv-min-ttl", po::value<vec<u64>>()->default_value({}, ""), "min ttl to revalidate (list)")
@@ -606,6 +609,7 @@ auto main(int argc, char **argv) -> int
     auto model_path = vm["ml-model-path"].as<vec<str>>();
     auto conf_thres = vm["ml-conf-thres"].as<vec<f32>>();
     auto dump_zonestats = vm["dump-zonestats"].as<bool>();
+    auto dump_stats_ts_dir = vm["dump-stats-ts"].as<str>();
     for (auto infile : input_files)
         if (!std::filesystem::exists(infile))
             FAIL("input file does not exist: " + infile);
@@ -698,6 +702,19 @@ auto main(int argc, char **argv) -> int
                             cfg.infile_base(), cfg.conf_thres);
             auto f = fopen(outpath.c_str(), "w");
             cfg.zonestats_outf = f;
+        }
+    }
+
+    if (!dump_stats_ts_dir.empty()) {
+        std::filesystem::create_directories(dump_stats_ts_dir);
+        auto i = 0;
+        for (auto &cfg : configs) {
+            auto outpath =
+                fmt::format("{}/{}_{}_{}_stats_ts.csv", dump_stats_ts_dir, i++,
+                            cfg.infile_base(), cfg.conf_thres);
+            auto f = fopen(outpath.c_str(), "w");
+            fmt::print(f, "{}\n", SimStats::ts_csv_hdr());
+            cfg.ts_outf = f;
         }
     }
 

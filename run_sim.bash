@@ -5,7 +5,7 @@ source .venv/bin/activate
 xmake
 
 iter=$1
-runnum=9
+runnum=10
 njobs=8
 ksr=1
 
@@ -96,14 +96,23 @@ ksr=1
 #     --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68,0.66} \
 #     --csvout=results/r${runnum}i${iter}_ml_wm_rfc.csv
 
-# vary za
-xmake r sim -s2 -p$njobs -c2048 \
-    -itraces/sim/cf_{a..h}.bin.zst \
+# # vary za
+# xmake r sim -s2 -p$njobs -c2048 \
+#     -itraces/sim/cf_{a..h}.bin.zst \
+#     --rv-mode=ml \
+#     --cache-type=lru \
+#     --dump-zonestats=true \
+#     --ml-model-path=models/v${runnum}_cf_rfc.onnx \
+#     --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68,0.66} \
+#     --rv-ma-za={0.02,0.03,0.04,0.06,0.08,0.1,0.12,0.14,0.16} \
+#     --csvout=results/r${runnum}i${iter}_ml_cf_rfc_varyza.csv
+
+# ml models, cf, get time series
+xmake r sim -s$ksr -p$njobs -c2048 \
+    -itraces/sim/cf_{b,c,f,h}.bin.zst \
     --rv-mode=ml \
     --cache-type=lru \
-    --dump-zonestats=true \
     --ml-model-path=models/v${runnum}_cf_rfc.onnx \
-    --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68,0.66} \
-    --rv-ma-za={0.02,0.03,0.04,0.06,0.08,0.1,0.12,0.14,0.16} \
-    --csvout=results/r${runnum}i${iter}_ml_cf_rfc_varyza.csv
-
+    --ml-conf-thres={1,0.95,0.9,0.85,0.8,0.75,0.7,0.68} \
+    --dump-stats-ts=results/r${runnum}i${iter}_stats_ts \
+    --csvout=results/r${runnum}i${iter}_ml_timeseries.csv
