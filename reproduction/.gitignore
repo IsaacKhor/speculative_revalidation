@@ -1,0 +1,12 @@
+/.work/
+/smoke/
+/validation/
+/verification/
+/traces/
+/models/
+/results/
+/output/
+/logs/
+/run.json
+/__pycache__/
+*.py[cod]
